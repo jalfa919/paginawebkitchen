@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Los Aromos Kitchen y Sushi</title>
+<style>
+body{
+margin:0;
+font-family:Arial, sans-serif;
+background:#000;
+color:#fff;
+}
+
+header{
+background:#111;
+padding:15px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+color:#e10600;
+}
+
+.container{
+padding:15px;
+}
+
+.product{
+background:#111;
+border-radius:10px;
+padding:15px;
+margin-bottom:15px;
+}
+
+button{
+background:#e10600;
+color:#fff;
+border:none;
+padding:10px;
+border-radius:5px;
+cursor:pointer;
+font-weight:bold;
+width:100%;
+}
+
+button:hover{
+opacity:0.8;
+}
+
+.cart{
+position:fixed;
+bottom:0;
+left:0;
+right:0;
+background:#111;
+padding:10px;
+border-top:2px solid #e10600;
+}
+
+input, select{
+width:100%;
+padding:8px;
+margin-top:5px;
+margin-bottom:10px;
+border-radius:5px;
+border:none;
+}
+
+.admin{
+display:none;
+background:#111;
+padding:15px;
+margin-top:20px;
+border-radius:10px;
+}
+
+.delivery{
+margin:10px 0;
+}
+</style>
+</head>
+<body>
+
+<header>
+Los Aromos Kitchen y Sushi
+</header>
+
+<div class="container">
+
+<h3>🍣 Sushi</h3>
+<div class="product">
+<p>Promo 30 piezas - $12.000</p>
+<button onclick="addToCart('Promo 30 piezas',12000)">Agregar</button>
+</div>
+
+<h3>🍟 Papas Fritas</h3>
+<div class="product">
+<p>Papas grandes - $4.000</p>
+<button onclick="addToCart('Papas grandes',4000)">Agregar</button>
+</div>
+
+<h3>🥪 Sandwich</h3>
+<div class="product">
+<p>Sandwich Churrasco - $6.000</p>
+<button onclick="addToCart('Sandwich Churrasco',6000)">Agregar</button>
+</div>
+
+<div class="delivery">
+<label>
+<input type="checkbox" id="deliveryCheck"> Envío a domicilio (+$2000)
+</label>
+</div>
+
+<h3>Datos del Cliente</h3>
+<input type="text" id="name" placeholder="Nombre">
+<input type="text" id="address" placeholder="Dirección">
+<select id="payment">
+<option value="Efectivo">Efectivo</option>
+<option value="Transferencia">Transferencia</option>
+</select>
+
+<button onclick="sendOrder()">Finalizar Pedido por WhatsApp</button>
+
+<button onclick="showAdmin()">Panel Administrador</button>
+
+<div class="admin" id="adminPanel">
+<h3>Administrador</h3>
+<input type="password" id="adminPass" placeholder="Contraseña">
+<button onclick="loginAdmin()">Entrar</button>
+<div id="adminContent" style="display:none;">
+<p>Ventas totales: $<span id="totalSales">0</span></p>
+<button onclick="resetSales()">Reiniciar Ventas</button>
+</div>
+</div>
+
+</div>
+
+<div class="cart">
+Carrito: $<span id="total">0</span>
+</div>
+
+<script>
+let cart = [];
+let total = 0;
+let totalSales = localStorage.getItem("sales") || 0;
+document.getElementById("totalSales").innerText = totalSales;
+
+function addToCart(name, price){
+cart.push({name,price});
+total += price;
+document.getElementById("total").innerText = total;
+}
+
+function sendOrder(){
+let name = document.getElementById("name").value;
+let address = document.getElementById("address").value;
+let payment = document.getElementById("payment").value;
+let delivery = document.getElementById("deliveryCheck").checked;
+
+if(delivery){
+total += 2000;
+}
+
+let message = "Pedido Los Aromos Kitchen y Sushi%0A";
+cart.forEach(item=>{
+message += item.name+" - $"+item.price+"%0A";
+});
+if(delivery){
+message += "Delivery: $2000%0A";
+}
+message += "Total: $"+total+"%0A";
+message += "Nombre: "+name+"%0A";
+message += "Dirección: "+address+"%0A";
+message += "Pago: "+payment;
+
+totalSales = parseInt(totalSales) + total;
+localStorage.setItem("sales", totalSales);
+document.getElementById("totalSales").innerText = totalSales;
+
+window.open("https://wa.me/56979553144?text="+message, "_blank");
+}
+
+function showAdmin(){
+document.getElementById("adminPanel").style.display="block";
+}
+
+function loginAdmin(){
+let pass = document.getElementById("adminPass").value;
+if(pass === "1234"){
+document.getElementById("adminContent").style.display="block";
+alert("Bienvenido Administrador");
+}else{
+alert("Contraseña incorrecta");
+}
+}
+
+function resetSales(){
+localStorage.setItem("sales",0);
+document.getElementById("totalSales").innerText = 0;
+}
+</script>
+
+</body>
+</html>
