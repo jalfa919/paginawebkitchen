@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Pedido Sushi</title>
+<title>Kitchen Los Aromos</title>
 
 <style>
 
@@ -23,19 +23,52 @@ background:var(--background);
 
 header{
 background:var(--surface);
-padding:5px 0;
+padding:0;
 text-align:center;
 box-shadow:0 2px 5px rgba(0,0,0,0.1);
 }
 
 .logo-container{
-width:200px;
+width:250px;
 margin:auto;
 }
 
 .logo{
 width:100%;
 }
+
+/* CARRUSEL */
+
+.carousel{
+position:relative;
+max-width:500px;
+margin:auto;
+overflow:hidden;
+}
+
+.carousel img{
+width:100%;
+display:none;
+}
+
+.carousel img.active{
+display:block;
+}
+
+.carousel button{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:rgba(0,0,0,0.5);
+color:white;
+border:none;
+font-size:20px;
+padding:10px;
+cursor:pointer;
+}
+
+.prev{ left:0; }
+.next{ right:0; }
 
 .container{
 padding:15px;
@@ -105,7 +138,6 @@ input, select{
 width:100%;
 padding:10px;
 margin-top:10px;
-box-sizing:border-box;
 }
 
 .total{
@@ -122,6 +154,37 @@ font-size:18px;
 background:#25D366;
 }
 
+/* CONTACTOS */
+
+.contact{
+background:white;
+padding:15px;
+margin-top:20px;
+border-radius:10px;
+text-align:center;
+}
+
+.contact a{
+display:block;
+margin:5px;
+color:#e63946;
+text-decoration:none;
+font-weight:bold;
+}
+
+/* MAPA */
+
+.map{
+margin-top:20px;
+}
+
+.map iframe{
+width:100%;
+height:250px;
+border:0;
+border-radius:10px;
+}
+
 </style>
 
 </head>
@@ -134,6 +197,20 @@ background:#25D366;
 </div>
 
 </header>
+
+<!-- CARRUSEL -->
+
+<div class="carousel">
+
+<button class="prev" onclick="move(-1)">❮</button>
+
+<img src="images/promo1.jpg" class="active">
+<img src="images/promo2.jpg">
+<img src="images/promo3.jpg">
+
+<button class="next" onclick="move(1)">❯</button>
+
+</div>
 
 <div class="container">
 
@@ -160,38 +237,58 @@ Enviar pedido por WhatsApp
 
 </div>
 
+<!-- CONTACTOS -->
+
+<div class="contact">
+
+<h3>Contacto</h3>
+
+<a href="tel:+569XXXXXXXX">📞 Llamar</a>
+
+<a href="https://wa.me/569XXXXXXXX">💬 WhatsApp</a>
+
+<a href="https://instagram.com/TUINSTAGRAM">📸 Instagram</a>
+
+</div>
+
+<!-- MAPA -->
+
+<div class="map">
+
+<iframe
+src="https://www.google.com/maps?q=-29.9509505,-71.349806&z=17&output=embed">
+</iframe>
+
+</div>
+
 </div>
 
 <script>
 
-const phone = "569XXXXXXXX"; // CAMBIA ESTO POR TU NUMERO
+const phone = "569XXXXXXXX";
 const deliveryCost = 2000;
 
 const products = [
 
 { id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
-{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Gohan de pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-{ id:'sushi3', name:'Sushi Burger Filete Crispy', description:'Sushi burger crispy', price:6000, category:'Sushi', icon:'🍔'},
-
 { id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-
-{ id:'emp1', name:'Empanada Mechada Queso', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
-
+{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
 { id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
-
-{ id:'sand1', name:'Sandwich Pollo Crispy', description:'Pollo tomate lechuga', price:3600, category:'Sandwich', icon:'🥪'},
-
 { id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'},
-
 { id:'promo1', name:'Promo 20 cortes', description:'20 cortes kanikama', price:10000, category:'Promos', icon:'🍣'}
 
 ];
 
-let cart = {};
+let cart = JSON.parse(localStorage.getItem("cart")) || {};
+
+function saveCart(){
+localStorage.setItem("cart", JSON.stringify(cart));
+}
 
 function renderMenu(){
 
 const menu = document.getElementById("menu");
+menu.innerHTML="";
 
 const categories = [...new Set(products.map(p => p.category))];
 
@@ -247,99 +344,99 @@ menu.innerHTML += html;
 
 });
 
+updateTotal();
+
 }
 
 function add(id){
-cart[id] = (cart[id] || 0) + 1;
-refresh();
+cart[id]=(cart[id]||0)+1;
+saveCart();
+renderMenu();
 }
 
 function remove(id){
-if(cart[id]){
 cart[id]--;
 if(cart[id]<=0) delete cart[id];
-}
-refresh();
+saveCart();
+renderMenu();
 }
 
 function updateTotal(){
 
-let total = 0;
+let total=0;
 
 for(const id in cart){
 
-const product = products.find(p => p.id === id);
+const product = products.find(p=>p.id===id);
 
-total += product.price * cart[id];
+total+=product.price*cart[id];
 
 }
 
 if(document.getElementById("deliveryType").value==="delivery")
-total += deliveryCost;
+total+=deliveryCost;
 
-document.getElementById("total").innerText = total;
-
-}
-
-function refresh(){
-
-document.getElementById("menu").innerHTML="";
-
-renderMenu();
-
-updateTotal();
+document.getElementById("total").innerText=total;
 
 }
 
 function sendWhatsApp(){
 
-const cliente = document.getElementById("cliente").value;
-const direccion = document.getElementById("direccion").value;
-const delivery = document.getElementById("deliveryType").value;
+const cliente=document.getElementById("cliente").value;
+const direccion=document.getElementById("direccion").value;
+const delivery=document.getElementById("deliveryType").value;
 
-if(!cliente){
-
-alert("Ingrese nombre del cliente");
-return;
-
-}
-
-let message = "🍣 *NUEVO PEDIDO* 🍣%0A%0A";
-
-message += "*Cliente:* " + cliente + "%0A";
+let msg="🍣 *Pedido* 🍣%0A";
+msg+="Cliente: "+cliente+"%0A";
 
 if(delivery==="delivery")
-message += "*Dirección:* " + direccion + "%0A";
+msg+="Dirección: "+direccion+"%0A";
 
-message += "%0A*Detalle:*%0A";
+msg+="%0A";
 
-let total = 0;
+let total=0;
 
 for(const id in cart){
 
-const product = products.find(p => p.id === id);
+const p=products.find(x=>x.id===id);
 
-message += cart[id] + "x " + product.name + " - $" + (product.price * cart[id]) + "%0A";
+msg+=cart[id]+"x "+p.name+"%0A";
 
-total += product.price * cart[id];
+total+=p.price*cart[id];
 
 }
 
 if(delivery==="delivery"){
+msg+="Delivery: $2000%0A";
+total+=deliveryCost;
+}
 
-message += "%0ADelivery: $2000";
+msg+="TOTAL: $"+total;
 
-total += deliveryCost;
+window.open("https://wa.me/"+phone+"?text="+msg);
 
 }
 
-message += "%0A%0A*TOTAL: $" + total + "*";
+/* CARRUSEL */
 
-const url = "https://wa.me/" + phone + "?text=" + message;
+let index=0;
+const slides=document.querySelectorAll(".carousel img");
 
-window.open(url, "_blank");
+function showSlide(i){
+
+slides.forEach(s=>s.classList.remove("active"));
+
+index=(i+slides.length)%slides.length;
+
+slides[index].classList.add("active");
 
 }
+
+function move(step){
+showSlide(index+step);
+}
+
+setInterval(()=>move(1),2000);
 
 renderMenu();
 
