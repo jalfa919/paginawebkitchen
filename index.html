@@ -14,90 +14,82 @@
 --muted:#bcbcbc;
 }
 
-*{
-box-sizing:border-box;
-}
+*{box-sizing:border-box;}
 
 body{
 margin:0;
-font-family:Arial, sans-serif;
+font-family:Arial;
 background:var(--bg);
 color:var(--text);
-padding-bottom:110px;
+padding-bottom:120px;
 }
 
-/* HEADER */
 header{
 background:var(--surface);
-padding:20px 10px;
+padding:20px;
 text-align:center;
-position:sticky;
-top:0;
-z-index:10;
 border-bottom:2px solid var(--accent);
 }
 
-/* LOGO */
 .logo{
 width:100%;
-max-width:320px;
-height:auto;
-display:block;
-margin:0 auto;
+max-width:300px;
 }
 
-/* CONTENIDO */
 .container{
 padding:15px;
-max-width:640px;
-margin:0 auto;
+max-width:700px;
+margin:auto;
 }
 
-h3{
-margin-bottom:8px;
+.category{
+margin-top:25px;
+}
+
+.category h2{
+border-bottom:1px solid #333;
+padding-bottom:5px;
+color:var(--accent);
 }
 
 .product{
 background:var(--surface);
-border-radius:10px;
 padding:15px;
-margin-bottom:15px;
+margin-top:10px;
+border-radius:10px;
 border:1px solid #222;
 }
 
-.product p{
-margin-top:0;
-color:var(--muted);
+.product-title{
+font-size:18px;
+font-weight:bold;
 }
 
-/* BOTONES */
+.product-desc{
+color:var(--muted);
+font-size:14px;
+margin:5px 0;
+}
+
+.product-price{
+margin-bottom:10px;
+}
+
 button{
 background:var(--accent);
-color:var(--text);
+color:white;
 border:none;
-padding:12px;
+padding:10px;
 border-radius:6px;
-cursor:pointer;
-font-weight:bold;
 width:100%;
 font-size:16px;
+cursor:pointer;
 }
 
 button:hover{
 opacity:0.9;
 }
 
-button:disabled{
-opacity:0.5;
-cursor:not-allowed;
-}
-
-.secondary{
-background:#2b2b2b;
-margin-top:10px;
-}
-
-/* CARRITO FIJO */
 .cart{
 position:fixed;
 bottom:0;
@@ -106,248 +98,131 @@ right:0;
 background:var(--surface);
 padding:15px;
 border-top:2px solid var(--accent);
-font-size:18px;
 }
 
-/* INPUTS */
-input, select{
+.cart-items{
+background:var(--surface);
+padding:10px;
+margin-top:15px;
+border-radius:10px;
+}
+
+input,select{
 width:100%;
 padding:10px;
 margin-top:5px;
 margin-bottom:10px;
 border-radius:5px;
 border:none;
-font-size:16px;
 }
 
-/* ADMIN */
-.admin{
-display:none;
-background:var(--surface);
-padding:15px;
-margin-top:20px;
-border-radius:10px;
-}
-
-/* DELIVERY */
-.delivery{
-margin:10px 0;
-}
-
-/* ITEMS */
-.cart-items{
-background:var(--surface);
-border:1px solid #222;
-border-radius:10px;
-padding:10px;
-margin-bottom:16px;
-}
-
-.cart-items ul{
-padding-left:18px;
-margin:8px 0;
-}
-
-.empty{
-color:var(--muted);
-font-style:italic;
-}
-
-small{
-color:var(--muted);
-}
 </style>
-
 </head>
+
 <body>
 
-<!-- HEADER CON LOGO -->
 <header>
-<img class="logo" src="images/logoaromos.png" alt="Los Aromos Kitchen y Sushi">
+<img src="images/logoaromos.png" class="logo">
 </header>
 
 <div class="container">
 
-<h3>🍣 Sushi</h3>
+<div id="menu"></div>
 
-<div class="product">
-<p>Promo 30 piezas - $12.000</p>
-<button onclick="addToCart('Promo 30 piezas',12000)">Agregar</button>
-</div>
-
-<h3>🍟 Papas Fritas</h3>
-
-<div class="product">
-<p>Papas grandes - $4.000</p>
-<button onclick="addToCart('Papas grandes',4000)">Agregar</button>
-</div>
-
-<h3>🥪 Sandwich</h3>
-
-<div class="product">
-<p>Sandwich Churrasco - $6.000</p>
-<button onclick="addToCart('Sandwich Churrasco',6000)">Agregar</button>
-</div>
-
-<!-- DETALLE -->
 <div class="cart-items">
 
-<strong>Detalle del pedido</strong>
+<h3>Detalle pedido</h3>
 
 <ul id="cartItems"></ul>
 
-<div id="emptyCart" class="empty">
-Aún no agregas productos.
-</div>
-
-<small>
 Subtotal: $<span id="subtotal">0</span>
-</small>
 
 </div>
 
-<!-- DELIVERY -->
-<div class="delivery">
-<label>
-<input type="checkbox" id="deliveryCheck">
-Envío a domicilio (+$2000)
-</label>
-</div>
+<h3>Cliente</h3>
 
-<h3>Datos del Cliente</h3>
-
-<input type="text" id="name" placeholder="Nombre">
-
-<input type="text" id="address" placeholder="Dirección">
+<input id="name" placeholder="Nombre">
+<input id="address" placeholder="Dirección">
 
 <select id="payment">
-<option value="Efectivo">Efectivo</option>
-<option value="Transferencia">Transferencia</option>
+<option>Efectivo</option>
+<option>Transferencia</option>
 </select>
 
-<button id="sendOrderBtn" onclick="sendOrder()">
-Finalizar Pedido por WhatsApp
-</button>
-
-<button class="secondary" onclick="clearCart()">
-Vaciar carrito
-</button>
-
-<button class="secondary" onclick="showAdmin()">
-Panel Administrador
-</button>
-
-<div class="admin" id="adminPanel">
-
-<h3>Administrador</h3>
-
-<input type="password" id="adminPass" placeholder="Contraseña">
-
-<button onclick="loginAdmin()">
-Entrar
-</button>
-
-<div id="adminContent" style="display:none;">
-
-<p>
-Ventas totales: $<span id="totalSales">0</span>
-</p>
-
-<button onclick="resetSales()">
-Reiniciar Ventas
-</button>
-
-</div>
-</div>
+<button onclick="sendOrder()">Enviar por WhatsApp</button>
 
 </div>
 
-<!-- TOTAL -->
 <div class="cart">
-Carrito: $<span id="total">0</span>
+Total: $<span id="total">0</span>
 </div>
 
 <script>
 
-const DELIVERY_PRICE = 2000;
+const DELIVERY = 2000;
+
+const products = [
+
+{ id:'sushi1', name:'10 cortes Relleno Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
+{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Gohan de pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
+{ id:'sushi3', name:'Sushi Burger Filete Crispy', description:'Sushi burger de filete crispy', price:6000, category:'Sushi', icon:'🍔'},
+{ id:'hand1', name:'Hand Rolls Pollo Cebollín Queso', description:'Hand roll pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
+
+{ id:'emp1', name:'Empanada Carne Mechada Queso', description:'Carne mechada con queso', price:2300, category:'Empanadas', icon:'🥟'},
+
+{ id:'papas1', name:'Papas con Tocino', description:'Papas con tocino y salsa', price:5000, category:'Papas', icon:'🍟'},
+
+{ id:'sand1', name:'Sandwich Pollo Crispy', description:'Pollo crispy tomate lechuga', price:3600, category:'Sandwich', icon:'🥪'},
+
+{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'},
+
+{ id:'promo1', name:'Promo 20 cortes Kanikama', description:'20 cortes kanikama queso', price:10000, category:'Promos', icon:'🍣'}
+
+];
 
 const cart = [];
 
-let totalSales = parseInt(localStorage.getItem("sales") || "0");
+function renderMenu(){
 
-const totalElement = document.getElementById("total");
+const menu = document.getElementById("menu");
 
-const subtotalElement = document.getElementById("subtotal");
+const categories = [...new Set(products.map(p=>p.category))];
 
-const cartItemsElement = document.getElementById("cartItems");
+categories.forEach(category=>{
 
-const emptyCartElement = document.getElementById("emptyCart");
+const section = document.createElement("div");
 
-const totalSalesElement = document.getElementById("totalSales");
+section.className="category";
 
-const deliveryCheckElement = document.getElementById("deliveryCheck");
+section.innerHTML=`<h2>${category}</h2>`;
 
-totalSalesElement.innerText = totalSales;
+products
+.filter(p=>p.category===category)
+.forEach(product=>{
 
-deliveryCheckElement.addEventListener("change", updateOrderState);
+const div=document.createElement("div");
 
-function calculateSubtotal(){
+div.className="product";
 
-return cart.reduce((acc,item)=>acc+item.price,0);
+div.innerHTML=`
 
-}
+<div class="product-title">${product.icon} ${product.name}</div>
 
-function calculateTotal(){
+<div class="product-desc">${product.description}</div>
 
-return calculateSubtotal() + (deliveryCheckElement.checked ? DELIVERY_PRICE : 0);
+<div class="product-price">$${product.price}</div>
 
-}
+<button onclick="addToCart('${product.name}',${product.price})">
+Agregar
+</button>
 
-function updateOrderState(){
+`;
 
-let subtotal = calculateSubtotal();
+section.appendChild(div);
 
-let total = calculateTotal();
+});
 
-subtotalElement.innerText = subtotal;
-
-totalElement.innerText = total;
-
-renderCart();
-
-}
-
-function renderCart(){
-
-cartItemsElement.innerHTML="";
-
-if(cart.length===0){
-
-emptyCartElement.style.display="block";
-
-return;
-
-}
-
-emptyCartElement.style.display="none";
-
-cart.forEach((item,index)=>{
-
-let li=document.createElement("li");
-
-li.innerText=item.name+" - $"+item.price;
-
-let btn=document.createElement("button");
-
-btn.innerText="Quitar";
-
-btn.className="secondary";
-
-btn.onclick=()=>removeItem(index);
-
-li.appendChild(btn);
-
-cartItemsElement.appendChild(li);
+menu.appendChild(section);
 
 });
 
@@ -357,108 +232,61 @@ function addToCart(name,price){
 
 cart.push({name,price});
 
-updateOrderState();
+updateCart();
 
 }
 
-function removeItem(index){
+function updateCart(){
 
-cart.splice(index,1);
+const list=document.getElementById("cartItems");
 
-updateOrderState();
+list.innerHTML="";
 
-}
+let total=0;
 
-function clearCart(){
+cart.forEach(item=>{
 
-cart.length=0;
+const li=document.createElement("li");
 
-updateOrderState();
+li.innerText=`${item.name} - $${item.price}`;
+
+list.appendChild(li);
+
+total+=item.price;
+
+});
+
+document.getElementById("subtotal").innerText=total;
+document.getElementById("total").innerText=total;
 
 }
 
 function sendOrder(){
 
-let name=document.getElementById("name").value;
-
-let address=document.getElementById("address").value;
-
-let payment=document.getElementById("payment").value;
-
-let delivery=deliveryCheckElement.checked;
-
-let total=calculateTotal();
-
 if(cart.length===0){
-
 alert("Agrega productos");
-
 return;
-
 }
 
-let message="Pedido Los Aromos Kitchen y Sushi\n";
+let msg="Pedido Los Aromos Kitchen y Sushi\n";
 
-cart.forEach(item=>{
-
-message+=item.name+" - $"+item.price+"\n";
-
+cart.forEach(i=>{
+msg+=`${i.name} $${i.price}\n`;
 });
 
-if(delivery){
+msg+=`Total: $${document.getElementById("total").innerText}\n`;
 
-message+="Delivery: $2000\n";
+msg+=`Nombre: ${document.getElementById("name").value}\n`;
 
-}
+msg+=`Dirección: ${document.getElementById("address").value}\n`;
 
-message+="Total: $"+total+"\n";
+msg+=`Pago: ${document.getElementById("payment").value}`;
 
-message+="Nombre: "+name+"\n";
-
-message+="Dirección: "+address+"\n";
-
-message+="Pago: "+payment;
-
-totalSales+=total;
-
-localStorage.setItem("sales",totalSales);
-
-totalSalesElement.innerText=totalSales;
-
-window.open("https://wa.me/56979553144?text="+encodeURIComponent(message));
-
-clearCart();
+window.open(`https://wa.me/56979553144?text=${encodeURIComponent(msg)}`);
 
 }
 
-function showAdmin(){
-
-let panel=document.getElementById("adminPanel");
-
-panel.style.display=panel.style.display==="block"?"none":"block";
-
-}
-
-function loginAdmin(){
-
-let pass=document.getElementById("adminPass").value;
-
-if(pass==="1234"){
-
-document.getElementById("adminContent").style.display="block";
-
-alert("Bienvenido");
-}else{
-alert("Contraseña incorrecta");
-}
-}
-
-function resetSales(){
-
-totalSales=0;
-localStorage.setItem("sales",0);
-totalSalesElement.innerText=0;
-}
+renderMenu();
 
 </script>
 
