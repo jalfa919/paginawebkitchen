@@ -3,117 +3,137 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Los Aromos Kitchen y Sushi</title>
 
 <style>
+
 :root{
 --bg:#000;
 --surface:#111;
 --accent:#e10600;
 --text:#fff;
---muted:#bcbcbc;
+--muted:#aaa;
 }
-
-*{box-sizing:border-box;}
 
 body{
 margin:0;
 font-family:Arial;
 background:var(--bg);
 color:var(--text);
-padding-bottom:120px;
+padding-bottom:140px;
 }
 
+/* HEADER */
+
 header{
-background:var(--surface);
-padding:20px;
+background:#000;
 text-align:center;
-border-bottom:2px solid var(--accent);
+padding:20px 10px;
 }
 
 .logo{
 width:100%;
-max-width:300px;
+max-width:420px;
 }
+
+/* CARRUSEL */
+
+.carousel{
+position:relative;
+max-width:700px;
+margin:10px auto;
+overflow:hidden;
+}
+
+.carousel img{
+width:100%;
+border-radius:10px;
+}
+
+.arrow{
+position:absolute;
+top:50%;
+transform:translateY(-50%);
+background:rgba(0,0,0,0.5);
+border:none;
+color:white;
+font-size:25px;
+cursor:pointer;
+padding:10px;
+}
+
+.left{left:0;}
+.right{right:0;}
+
+/* MENU */
 
 .container{
-padding:15px;
 max-width:700px;
 margin:auto;
-}
-
-.category{
-margin-top:25px;
-}
-
-.category h2{
-border-bottom:1px solid #333;
-padding-bottom:5px;
-color:var(--accent);
+padding:15px;
 }
 
 .product{
 background:var(--surface);
 padding:15px;
-margin-top:10px;
+margin:10px 0;
 border-radius:10px;
-border:1px solid #222;
 }
 
-.product-title{
-font-size:18px;
-font-weight:bold;
+.qty-control{
+display:flex;
+gap:10px;
+align-items:center;
 }
 
-.product-desc{
-color:var(--muted);
-font-size:14px;
-margin:5px 0;
+.qty-control button{
+width:40px;
+height:40px;
+font-size:20px;
 }
 
-.product-price{
-margin-bottom:10px;
-}
-
-button{
-background:var(--accent);
-color:white;
-border:none;
-padding:10px;
-border-radius:6px;
-width:100%;
-font-size:16px;
-cursor:pointer;
-}
-
-button:hover{
-opacity:0.9;
-}
+/* CART */
 
 .cart{
 position:fixed;
 bottom:0;
 left:0;
 right:0;
-background:var(--surface);
+background:#000;
 padding:15px;
 border-top:2px solid var(--accent);
 }
 
-.cart-items{
-background:var(--surface);
+button{
+background:var(--accent);
+border:none;
+color:white;
 padding:10px;
-margin-top:15px;
-border-radius:10px;
+border-radius:6px;
+cursor:pointer;
+}
+
+.secondary{
+background:#333;
 }
 
 input,select{
 width:100%;
 padding:10px;
-margin-top:5px;
-margin-bottom:10px;
-border-radius:5px;
-border:none;
+margin:5px 0;
+}
+
+/* MAP */
+
+.map{
+margin-top:15px;
+}
+
+iframe{
+width:100%;
+border:0;
+border-radius:10px;
 }
 
 </style>
@@ -122,26 +142,48 @@ border:none;
 <body>
 
 <header>
+
 <img src="images/logoaromos.png" class="logo">
+
 </header>
 
-<div class="container">
+<!-- CARRUSEL -->
 
-<div id="menu"></div>
+<div class="carousel">
 
-<div class="cart-items">
+<button class="arrow left" onclick="prevImage()">❮</button>
 
-<h3>Detalle pedido</h3>
+<img id="carouselImage" src="images/premium1.jpg">
 
-<ul id="cartItems"></ul>
-
-Subtotal: $<span id="subtotal">0</span>
+<button class="arrow right" onclick="nextImage()">❯</button>
 
 </div>
 
-<h3>Cliente</h3>
+<div class="container">
+
+<h2>Menú</h2>
+
+<div id="menu"></div>
+
+<h2>Carrito</h2>
+
+<div id="cart"></div>
+
+<label>
+
+<select id="deliveryType" onchange="updateCart()">
+
+<option value="retiro">Retiro en local</option>
+<option value="delivery">Delivery (+$2000)</option>
+
+</select>
+
+</label>
+
+<h3>Datos cliente</h3>
 
 <input id="name" placeholder="Nombre">
+
 <input id="address" placeholder="Dirección">
 
 <select id="payment">
@@ -149,56 +191,89 @@ Subtotal: $<span id="subtotal">0</span>
 <option>Transferencia</option>
 </select>
 
-<button onclick="sendOrder()">Enviar por WhatsApp</button>
+<button onclick="sendOrder()">Enviar pedido WhatsApp</button>
+
+<div class="map">
+
+<h3>Ubicación</h3>
+
+<iframe
+src="https://www.google.com/maps?q=Coquimbo,Chile&output=embed"
+height="250">
+</iframe>
+
+</div>
+
+<h3>Contacto</h3>
+
+Teléfono: +56 9 7955 3144<br>
+Instagram: @losaromos<br>
+Facebook: Los Aromos Kitchen
 
 </div>
 
 <div class="cart">
+
 Total: $<span id="total">0</span>
+
 </div>
 
 <script>
 
-const DELIVERY = 2000;
+/* PRODUCTOS */
 
-const products = [
+const products=[
 
-{ id:'sushi1', name:'10 cortes Relleno Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
-{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Gohan de pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-{ id:'sushi3', name:'Sushi Burger Filete Crispy', description:'Sushi burger de filete crispy', price:6000, category:'Sushi', icon:'🍔'},
-{ id:'hand1', name:'Hand Rolls Pollo Cebollín Queso', description:'Hand roll pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-
-{ id:'emp1', name:'Empanada Carne Mechada Queso', description:'Carne mechada con queso', price:2300, category:'Empanadas', icon:'🥟'},
-
-{ id:'papas1', name:'Papas con Tocino', description:'Papas con tocino y salsa', price:5000, category:'Papas', icon:'🍟'},
-
-{ id:'sand1', name:'Sandwich Pollo Crispy', description:'Pollo crispy tomate lechuga', price:3600, category:'Sandwich', icon:'🥪'},
-
-{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'},
-
-{ id:'promo1', name:'Promo 20 cortes Kanikama', description:'20 cortes kanikama queso', price:10000, category:'Promos', icon:'🍣'}
+{name:"Promo Sushi",price:6000},
+{name:"Handroll",price:3000},
+{name:"Empanada",price:2300},
+{name:"Papas fritas",price:5000}
 
 ];
 
-const cart = [];
+/* CARRITO */
+
+let cart=JSON.parse(localStorage.getItem("cart"))||{};
+
+/* CARRUSEL */
+
+const images=[
+"images/premium1.jpg",
+"images/premium2.jpg",
+"images/premium3.jpg"
+];
+
+let current=0;
+
+function showImage(){
+
+document.getElementById("carouselImage").src=images[current];
+
+}
+
+function nextImage(){
+
+current=(current+1)%images.length;
+showImage();
+
+}
+
+function prevImage(){
+
+current=(current-1+images.length)%images.length;
+showImage();
+
+}
+
+setInterval(nextImage,2000);
+
+/* MENU */
 
 function renderMenu(){
 
-const menu = document.getElementById("menu");
+const menu=document.getElementById("menu");
 
-const categories = [...new Set(products.map(p=>p.category))];
-
-categories.forEach(category=>{
-
-const section = document.createElement("div");
-
-section.className="category";
-
-section.innerHTML=`<h2>${category}</h2>`;
-
-products
-.filter(p=>p.category===category)
-.forEach(product=>{
+products.forEach(p=>{
 
 const div=document.createElement("div");
 
@@ -206,87 +281,123 @@ div.className="product";
 
 div.innerHTML=`
 
-<div class="product-title">${product.icon} ${product.name}</div>
+${p.name}<br>$${p.price}
 
-<div class="product-desc">${product.description}</div>
+<div class="qty-control">
 
-<div class="product-price">$${product.price}</div>
+<button onclick="changeQty('${p.name}',-1)">-</button>
 
-<button onclick="addToCart('${product.name}',${product.price})">
-Agregar
-</button>
+<span>${cart[p.name]||0}</span>
+
+<button onclick="changeQty('${p.name}',1)">+</button>
+
+</div>
 
 `;
 
-section.appendChild(div);
-
-});
-
-menu.appendChild(section);
+menu.appendChild(div);
 
 });
 
 }
 
-function addToCart(name,price){
+/* CAMBIAR CANTIDAD */
 
-cart.push({name,price});
+function changeQty(name,delta){
 
-updateCart();
+cart[name]=(cart[name]||0)+delta;
+
+if(cart[name]<=0)delete cart[name];
+
+saveCart();
+renderCart();
+location.reload();
 
 }
 
-function updateCart(){
+/* GUARDAR */
 
-const list=document.getElementById("cartItems");
+function saveCart(){
 
-list.innerHTML="";
+localStorage.setItem("cart",JSON.stringify(cart));
+
+}
+
+/* CART */
+
+function renderCart(){
+
+const div=document.getElementById("cart");
+
+div.innerHTML="";
 
 let total=0;
 
-cart.forEach(item=>{
+for(let name in cart){
 
-const li=document.createElement("li");
+let qty=cart[name];
 
-li.innerText=`${item.name} - $${item.price}`;
+let product=products.find(p=>p.name==name);
 
-list.appendChild(li);
+let subtotal=product.price*qty;
 
-total+=item.price;
+total+=subtotal;
 
-});
+div.innerHTML+=`
 
-document.getElementById("subtotal").innerText=total;
+${name} x${qty} = $${subtotal}
+
+<button onclick="remove('${name}')">Eliminar</button>
+
+<br>
+
+`;
+
+}
+
+/* DELIVERY */
+
+if(document.getElementById("deliveryType").value=="delivery"){
+
+total+=2000;
+
+}
+
 document.getElementById("total").innerText=total;
 
 }
 
-function sendOrder(){
+/* REMOVE */
 
-if(cart.length===0){
-alert("Agrega productos");
-return;
+function remove(name){
+
+delete cart[name];
+
+saveCart();
+location.reload();
+
 }
 
-let msg="Pedido Los Aromos Kitchen y Sushi\n";
+/* WHATSAPP */
 
-cart.forEach(i=>{
-msg+=`${i.name} $${i.price}\n`;
-});
+function sendOrder(){
 
-msg+=`Total: $${document.getElementById("total").innerText}\n`;
+let msg="Pedido:%0A";
 
-msg+=`Nombre: ${document.getElementById("name").value}\n`;
+for(let name in cart){
 
-msg+=`Dirección: ${document.getElementById("address").value}\n`;
+msg+=`${name} x${cart[name]}%0A`;
 
-msg+=`Pago: ${document.getElementById("payment").value}`;
+}
 
-window.open(`https://wa.me/56979553144?text=${encodeURIComponent(msg)}`);
+msg+="Total: $"+document.getElementById("total").innerText;
+
+window.open("https://wa.me/56979553144?text="+msg);
 
 }
 
 renderMenu();
+renderCart();
 
 </script>
 
