@@ -4,422 +4,344 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Los Aromos Kitchen y Sushi</title>
+<title>Pedido Sushi</title>
 
 <style>
 
 :root{
---bg:#000;
---surface:#111;
---accent:#e10600;
---text:#fff;
---muted:#aaa;
+--primary:#e63946;
+--surface:#ffffff;
+--background:#f4f4f4;
+--text:#222;
 }
 
 body{
 margin:0;
-font-family:Arial;
-background:var(--bg);
-color:var(--text);
-padding-bottom:140px;
+font-family:Arial, sans-serif;
+background:var(--background);
 }
-
-/* HEADER */
 
 header{
 background:var(--surface);
-padding:0;              /* elimina espacio interno */
-line-height:0;          /* elimina espacio vertical extra */
-display:flex;
-justify-content:center;
-align-items:center;
+padding:5px 0;
+text-align:center;
+box-shadow:0 2px 5px rgba(0,0,0,0.1);
+}
+
+.logo-container{
+width:200px;
+margin:auto;
 }
 
 .logo{
 width:100%;
-max-width:600px;
-height:auto;
-display:block;
-margin:0;
 }
-
-/* CARRUSEL */
-
-.carousel{
-position:relative;
-max-width:700px;
-margin:10px auto;
-overflow:hidden;
-}
-
-.carousel img{
-width:100%;
-border-radius:10px;
-}
-
-.arrow{
-position:absolute;
-top:50%;
-transform:translateY(-50%);
-background:rgba(0,0,0,0.5);
-border:none;
-color:white;
-font-size:25px;
-cursor:pointer;
-padding:10px;
-}
-
-.left{left:0;}
-.right{right:0;}
-
-/* MENU */
 
 .container{
-max-width:700px;
-margin:auto;
 padding:15px;
+max-width:500px;
+margin:auto;
+}
+
+.category{
+margin-top:25px;
+}
+
+.category h2{
+border-bottom:2px solid var(--primary);
 }
 
 .product{
-background:var(--surface);
-padding:15px;
-margin:10px 0;
+background:white;
+padding:10px;
+margin-top:10px;
 border-radius:10px;
-}
-
-.qty-control{
 display:flex;
-gap:10px;
+justify-content:space-between;
 align-items:center;
 }
 
-.qty-control button{
-width:40px;
-height:40px;
-font-size:20px;
+.product-info{
+max-width:65%;
 }
 
-/* CART */
+.product-name{
+font-weight:bold;
+}
 
-.cart{
-position:fixed;
-bottom:0;
-left:0;
-right:0;
-background:#000;
-padding:15px;
-border-top:2px solid var(--accent);
+.product-description{
+font-size:14px;
+color:#666;
+}
+
+.product-price{
+color:var(--primary);
+font-weight:bold;
+}
+
+.controls{
+display:flex;
+align-items:center;
+gap:5px;
 }
 
 button{
-background:var(--accent);
-border:none;
+background:var(--primary);
 color:white;
-padding:10px;
-border-radius:6px;
+border:none;
+padding:5px 10px;
+border-radius:5px;
 cursor:pointer;
 }
 
-.secondary{
-background:#333;
-}
-
-input,select{
-width:100%;
-padding:10px;
-margin:5px 0;
-}
-
-/* MAP */
-
-.map{
-margin-top:15px;
-}
-
-iframe{
-width:100%;
-border:0;
+.total-box{
+background:white;
+padding:15px;
+margin-top:20px;
 border-radius:10px;
 }
 
-</style>
-</head>
+input, select{
+width:100%;
+padding:10px;
+margin-top:10px;
+box-sizing:border-box;
+}
 
+.total{
+font-size:20px;
+font-weight:bold;
+margin-top:10px;
+}
+
+.whatsapp-btn{
+width:100%;
+margin-top:15px;
+padding:15px;
+font-size:18px;
+background:#25D366;
+}
+
+</style>
+
+</head>
 <body>
 
 <header>
 
-<img src="images/logoaromos.png" class="logo">
+<div class="logo-container">
+<img src="logo.png" class="logo">
+</div>
 
 </header>
 
-<!-- CARRUSEL -->
-
-<div class="carousel">
-
-<button class="arrow left" onclick="prevImage()">❮</button>
-
-<img id="carouselImage" src="images/premium1.jpg">
-
-<button class="arrow right" onclick="nextImage()">❯</button>
-
-</div>
-
 <div class="container">
-
-<h2>Menú</h2>
 
 <div id="menu"></div>
 
-<h2>Carrito</h2>
+<div class="total-box">
 
-<div id="cart"></div>
+<input type="text" id="cliente" placeholder="Nombre del cliente">
 
-<label>
+<input type="text" id="direccion" placeholder="Dirección">
 
-<select id="deliveryType" onchange="updateCart()">
-
-<option value="retiro">Retiro en local</option>
+<select id="deliveryType" onchange="updateTotal()">
+<option value="retiro">Retiro en local (Gratis)</option>
 <option value="delivery">Delivery (+$2000)</option>
-
 </select>
 
-</label>
+<div class="total">
+Total: $<span id="total">0</span>
+</div>
 
-<h3>Datos cliente</h3>
-
-<input id="name" placeholder="Nombre">
-
-<input id="address" placeholder="Dirección">
-
-<select id="payment">
-<option>Efectivo</option>
-<option>Transferencia</option>
-</select>
-
-<button onclick="sendOrder()">Enviar pedido WhatsApp</button>
-
-<div class="map">
-
-<h3>Ubicación</h3>
-
-<iframe
-src="https://www.google.com/maps?q=-29.9509505,-71.349806&z=17&output=embed"
-height="250">
-</iframe>
-
-<div class="contacto">
-
-<h3>Contacto</h3>
-
-<!-- WhatsApp -->
-<p>
-<a href="https://wa.me/56979553144" target="_blank" class="social-btn whatsapp">
-WhatsApp
-</a>
-</p>
-
-<!-- Instagram -->
-<p>
-<a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank" class="social-btn instagram">
-Instagram
-</a>
-</p>
-
-<!-- Facebook -->
-<p>
-<a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank" class="social-btn facebook">
-Facebook
-</a>
-</p>
+<button class="whatsapp-btn" onclick="sendWhatsApp()">
+Enviar pedido por WhatsApp
+</button>
 
 </div>
-<div class="cart">
-
-Total: $<span id="total">0</span>
 
 </div>
 
 <script>
 
-/* PRODUCTOS */
+const phone = "569XXXXXXXX"; // CAMBIA ESTO POR TU NUMERO
+const deliveryCost = 2000;
 
-const products=[
+const products = [
 
-{name:"Promo Sushi",price:6000},
-{name:"Handroll",price:3000},
-{name:"Empanada",price:2300},
-{name:"Papas fritas",price:5000}
+{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
+{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Gohan de pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
+{ id:'sushi3', name:'Sushi Burger Filete Crispy', description:'Sushi burger crispy', price:6000, category:'Sushi', icon:'🍔'},
+
+{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
+
+{ id:'emp1', name:'Empanada Mechada Queso', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
+
+{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
+
+{ id:'sand1', name:'Sandwich Pollo Crispy', description:'Pollo tomate lechuga', price:3600, category:'Sandwich', icon:'🥪'},
+
+{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'},
+
+{ id:'promo1', name:'Promo 20 cortes', description:'20 cortes kanikama', price:10000, category:'Promos', icon:'🍣'}
 
 ];
 
-/* CARRITO */
-
-let cart=JSON.parse(localStorage.getItem("cart"))||{};
-
-/* CARRUSEL */
-
-const images=[
-"images/premium1.jpg",
-"images/premium2.jpg",
-"images/premium3.jpg"
-];
-
-let current=0;
-
-function showImage(){
-
-document.getElementById("carouselImage").src=images[current];
-
-}
-
-function nextImage(){
-
-current=(current+1)%images.length;
-showImage();
-
-}
-
-function prevImage(){
-
-current=(current-1+images.length)%images.length;
-showImage();
-
-}
-
-setInterval(nextImage,2000);
-
-/* MENU */
+let cart = {};
 
 function renderMenu(){
 
-const menu=document.getElementById("menu");
+const menu = document.getElementById("menu");
 
-products.forEach(p=>{
+const categories = [...new Set(products.map(p => p.category))];
 
-const div=document.createElement("div");
+categories.forEach(category => {
 
-div.className="product";
+let html = `<div class="category"><h2>${category}</h2>`;
 
-div.innerHTML=`
+products
+.filter(p => p.category === category)
+.forEach(product => {
 
-${p.name}<br>$${p.price}
+const qty = cart[product.id] || 0;
 
-<div class="qty-control">
+html += `
 
-<button onclick="changeQty('${p.name}',-1)">-</button>
+<div class="product">
 
-<span>${cart[p.name]||0}</span>
+<div class="product-info">
 
-<button onclick="changeQty('${p.name}',1)">+</button>
+<div class="product-name">
+${product.icon} ${product.name}
+</div>
+
+<div class="product-description">
+${product.description}
+</div>
+
+<div class="product-price">
+$${product.price}
+</div>
+
+</div>
+
+<div class="controls">
+
+<button onclick="remove('${product.id}')">−</button>
+
+<span>${qty}</span>
+
+<button onclick="add('${product.id}')">+</button>
+
+</div>
 
 </div>
 
 `;
 
-menu.appendChild(div);
+});
+
+html += `</div>`;
+
+menu.innerHTML += html;
 
 });
 
 }
 
-/* CAMBIAR CANTIDAD */
+function add(id){
+cart[id] = (cart[id] || 0) + 1;
+refresh();
+}
 
-function changeQty(name,delta){
+function remove(id){
+if(cart[id]){
+cart[id]--;
+if(cart[id]<=0) delete cart[id];
+}
+refresh();
+}
 
-cart[name]=(cart[name]||0)+delta;
+function updateTotal(){
 
-if(cart[name]<=0)delete cart[name];
+let total = 0;
 
-saveCart();
-renderCart();
-location.reload();
+for(const id in cart){
+
+const product = products.find(p => p.id === id);
+
+total += product.price * cart[id];
 
 }
 
-/* GUARDAR */
+if(document.getElementById("deliveryType").value==="delivery")
+total += deliveryCost;
 
-function saveCart(){
-
-localStorage.setItem("cart",JSON.stringify(cart));
-
-}
-
-/* CART */
-
-function renderCart(){
-
-const div=document.getElementById("cart");
-
-div.innerHTML="";
-
-let total=0;
-
-for(let name in cart){
-
-let qty=cart[name];
-
-let product=products.find(p=>p.name==name);
-
-let subtotal=product.price*qty;
-
-total+=subtotal;
-
-div.innerHTML+=`
-
-${name} x${qty} = $${subtotal}
-
-<button onclick="remove('${name}')">Eliminar</button>
-
-<br>
-
-`;
+document.getElementById("total").innerText = total;
 
 }
 
-/* DELIVERY */
+function refresh(){
 
-if(document.getElementById("deliveryType").value=="delivery"){
+document.getElementById("menu").innerHTML="";
 
-total+=2000;
+renderMenu();
 
-}
-
-document.getElementById("total").innerText=total;
+updateTotal();
 
 }
 
-/* REMOVE */
+function sendWhatsApp(){
 
-function remove(name){
+const cliente = document.getElementById("cliente").value;
+const direccion = document.getElementById("direccion").value;
+const delivery = document.getElementById("deliveryType").value;
 
-delete cart[name];
+if(!cliente){
 
-saveCart();
-location.reload();
-
-}
-
-/* WHATSAPP */
-
-function sendOrder(){
-
-let msg="Pedido:%0A";
-
-for(let name in cart){
-
-msg+=`${name} x${cart[name]}%0A`;
+alert("Ingrese nombre del cliente");
+return;
 
 }
 
-msg+="Total: $"+document.getElementById("total").innerText;
+let message = "🍣 *NUEVO PEDIDO* 🍣%0A%0A";
 
-window.open("https://wa.me/56979553144?text="+msg);
+message += "*Cliente:* " + cliente + "%0A";
+
+if(delivery==="delivery")
+message += "*Dirección:* " + direccion + "%0A";
+
+message += "%0A*Detalle:*%0A";
+
+let total = 0;
+
+for(const id in cart){
+
+const product = products.find(p => p.id === id);
+
+message += cart[id] + "x " + product.name + " - $" + (product.price * cart[id]) + "%0A";
+
+total += product.price * cart[id];
+
+}
+
+if(delivery==="delivery"){
+
+message += "%0ADelivery: $2000";
+
+total += deliveryCost;
+
+}
+
+message += "%0A%0A*TOTAL: $" + total + "*";
+
+const url = "https://wa.me/" + phone + "?text=" + message;
+
+window.open(url, "_blank");
 
 }
 
 renderMenu();
-renderCart();
 
 </script>
 
