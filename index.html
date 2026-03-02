@@ -229,11 +229,69 @@ border-radius:10px;
 
 <div class="total">
 Total: $<span id="total">0</span>
+  
 </div>
 
-<button class="whatsapp-btn" onclick="sendWhatsApp()">
-Enviar pedido por WhatsApp
-</button>
+function sendWhatsApp(){
+
+const cliente = document.getElementById("cliente").value;
+const direccion = document.getElementById("direccion").value;
+const delivery = document.getElementById("deliveryType").value;
+
+if(Object.keys(cart).length === 0){
+alert("El carrito está vacío");
+return;
+}
+
+if(cliente === ""){
+alert("Ingrese el nombre del cliente");
+return;
+}
+
+if(delivery === "delivery" && direccion === ""){
+alert("Ingrese la dirección");
+return;
+}
+
+let msg = "🍣 *NUEVO PEDIDO - LOS AROMOS* 🍣%0A%0A";
+
+msg += "👤 Cliente: " + cliente + "%0A";
+
+if(delivery === "delivery"){
+msg += "📍 Dirección: " + direccion + "%0A";
+msg += "🚚 Tipo: Delivery%0A";
+}else{
+msg += "🏪 Tipo: Retiro en local%0A";
+}
+
+msg += "%0A🛒 *Detalle:*%0A";
+
+let total = 0;
+
+for(const id in cart){
+
+const product = products.find(p=>p.id===id);
+
+const subtotal = product.price * cart[id];
+
+msg += cart[id] + "x " + product.name + " - $" + subtotal + "%0A";
+
+total += subtotal;
+
+}
+
+if(delivery === "delivery"){
+msg += "%0A🚚 Delivery: $2000";
+total += deliveryCost;
+}
+
+msg += "%0A%0A💰 *TOTAL: $" + total + "*";
+
+const url = "https://wa.me/56979553144?text=" + msg;
+
+window.open(url, "_blank");
+
+}
 
 </div>
 
@@ -243,7 +301,7 @@ Enviar pedido por WhatsApp
 
 <h3>Contacto</h3>
 
-<a href="https://wa.me/56931447955">💬 WhatsApp</a>
+<a href="https://wa.me/56979553144">💬 WhatsApp</a>
 
 <a href="https://www.instagram.com/kitchen.los.aromos/">📸 Instagram</a>
 
