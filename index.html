@@ -3,7 +3,6 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>Los Aromos Kitchen y Sushi</title>
 
 <style>
@@ -22,7 +21,6 @@ background:var(--background);
 }
 
 /* HEADER */
-
 header{
 background:var(--surface);
 padding:5px 0;
@@ -40,7 +38,6 @@ width:100%;
 }
 
 /* CARRUSEL */
-
 .carousel{
 position:relative;
 width:100%;
@@ -75,7 +72,6 @@ padding:5px 10px;
 .next{right:0;}
 
 /* CONTENIDO */
-
 .container{
 padding:15px;
 max-width:500px;
@@ -133,8 +129,23 @@ border-radius:5px;
 cursor:pointer;
 }
 
-/* TOTAL BOX */
+/* CARRITO */
+.cart-box{
+background:white;
+padding:15px;
+margin-top:20px;
+border-radius:10px;
+}
 
+.cart-item{
+display:flex;
+justify-content:space-between;
+align-items:center;
+margin-top:8px;
+font-size:14px;
+}
+
+/* TOTAL BOX */
 .total-box{
 background:white;
 padding:15px;
@@ -164,7 +175,6 @@ background:#25D366;
 }
 
 /* MAPA */
-
 .map{
 margin-top:20px;
 border-radius:10px;
@@ -172,7 +182,6 @@ overflow:hidden;
 }
 
 /* CONTACTOS */
-
 .contact{
 background:white;
 padding:15px;
@@ -189,39 +198,40 @@ font-weight:bold;
 }
 
 </style>
-
 </head>
 <body>
 
 <header>
-
 <div class="logo-container">
 <img src="images/logo.png" class="logo">
 </div>
-
 </header>
 
-<!-- CARRUSEL -->
-
 <div class="carousel">
-
 <img src="images/premium1.jpg" class="active">
 <img src="images/premium2.jpg">
 <img src="images/premium3.jpg">
-
 <button class="prev" onclick="moveSlide(-1)">❮</button>
 <button class="next" onclick="moveSlide(1)">❯</button>
-
 </div>
 
 <div class="container">
 
 <div id="menu"></div>
 
+<!-- CARRITO VISUAL -->
+<div class="cart-box">
+<h3>🛒 Tu pedido</h3>
+<div id="cart-items"></div>
+<button onclick="clearCart()" style="background:#999;margin-top:10px;">
+🗑 Vaciar carrito
+</button>
+</div>
+
+<!-- DATOS Y TOTAL -->
 <div class="total-box">
 
 <input type="text" id="cliente" placeholder="Nombre del cliente">
-
 <input type="text" id="direccion" placeholder="Dirección">
 
 <select id="deliveryType" onchange="updateTotal()">
@@ -239,30 +249,18 @@ Enviar pedido por WhatsApp
 
 </div>
 
-<!-- MAPA -->
-
 <div class="map">
-
 <iframe
 src="https://www.google.com/maps?q=-29.9509505,-71.349806&hl=es&z=17&output=embed"
-width="100%"
-height="250"
-style="border:0;">
+width="100%" height="250" style="border:0;">
 </iframe>
-
 </div>
 
-<!-- CONTACTOS -->
-
 <div class="contact">
-
 Contacto directo:
-
 <a href="https://wa.me/56979553144">WhatsApp</a>
-
 <a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a>
 <a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
-
 </div>
 
 </div>
@@ -273,18 +271,12 @@ const phone = "56979553144";
 const deliveryCost = 2000;
 
 const products = [
-
 { id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
 { id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-
 { id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-
 { id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
-
 { id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
-
 { id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
-
 ];
 
 let cart = JSON.parse(localStorage.getItem("cart")) || {};
@@ -294,60 +286,62 @@ localStorage.setItem("cart", JSON.stringify(cart));
 }
 
 function renderMenu(){
-
 const menu = document.getElementById("menu");
 menu.innerHTML="";
-
 const categories = [...new Set(products.map(p => p.category))];
 
 categories.forEach(category=>{
-
 let html=`<div class="category"><h2>${category}</h2>`;
-
 products.filter(p=>p.category===category).forEach(product=>{
-
 const qty=cart[product.id]||0;
-
 html+=`
-
 <div class="product">
-
 <div class="product-info">
-
-<div class="product-name">
-${product.icon} ${product.name}
+<div class="product-name">${product.icon} ${product.name}</div>
+<div class="product-description">${product.description}</div>
+<div class="product-price">$${product.price}</div>
 </div>
-
-<div class="product-description">
-${product.description}
-</div>
-
-<div class="product-price">
-$${product.price}
-</div>
-
-</div>
-
 <div class="controls">
-
 <button onclick="remove('${product.id}')">−</button>
-
 <span>${qty}</span>
-
 <button onclick="add('${product.id}')">+</button>
-
 </div>
-
 </div>
 `;
-
 });
-
 html+="</div>";
 menu.innerHTML+=html;
-
 });
+}
 
+function renderCart(){
+const box=document.getElementById("cart-items");
+box.innerHTML="";
+if(Object.keys(cart).length===0){
+box.innerHTML="<p>Carrito vacío</p>";
+return;
+}
+for(const id in cart){
+const product=products.find(p=>p.id===id);
+box.innerHTML+=`
+<div class="cart-item">
+<span>${cart[id]}x ${product.name}</span>
+<button onclick="deleteItem('${id}')" style="background:#999;">❌</button>
+</div>
+`;
+}
+}
+
+function deleteItem(id){
+delete cart[id];
+saveCart();
+refresh();
+}
+
+function clearCart(){
+cart={};
+saveCart();
+refresh();
 }
 
 function add(id){
@@ -366,73 +360,63 @@ refresh();
 }
 
 function updateTotal(){
-
 let total=0;
-
 for(const id in cart){
-
 const product=products.find(p=>p.id===id);
-
 total+=product.price*cart[id];
-
 }
-
 if(document.getElementById("deliveryType").value==="delivery")
 total+=deliveryCost;
-
 document.getElementById("total").innerText=total;
-
 }
 
 function refresh(){
 renderMenu();
+renderCart();
 updateTotal();
 }
 
 function sendWhatsApp(){
-
-const cliente=document.getElementById("cliente").value;
-const direccion=document.getElementById("direccion").value;
-const delivery=document.getElementById("deliveryType").value;
 
 if(Object.keys(cart).length===0){
 alert("Carrito vacío");
 return;
 }
 
-let msg="🍣 *NUEVO PEDIDO - LOS AROMOS* 🍣%0A%0A";
+const cliente=document.getElementById("cliente").value;
+const direccion=document.getElementById("direccion").value;
+const delivery=document.getElementById("deliveryType").value;
 
-msg+="👤 Cliente: "+cliente+"%0A";
+let msg="🍣 NUEVO PEDIDO - LOS AROMOS 🍣\n\n";
+msg+="Cliente: "+cliente+"\n";
 
 if(delivery==="delivery"){
-msg+="📍 Dirección: "+direccion+"%0A";
-msg+="🚚 Delivery%0A";
+msg+="Dirección: "+direccion+"\n";
+msg+="Delivery\n";
 }else{
-msg+="🏪 Retiro en local%0A";
+msg+="Retiro en local\n";
 }
 
-msg+="%0A🛒 Detalle:%0A";
+msg+="\nDetalle:\n";
 
 let total=0;
 
 for(const id in cart){
-
 const product=products.find(p=>p.id===id);
-
-msg+=cart[id]+"x "+product.name+" - $"+(product.price*cart[id])+"%0A";
-
+msg+=cart[id]+"x "+product.name+" - $"+(product.price*cart[id])+"\n";
 total+=product.price*cart[id];
-
 }
 
 if(delivery==="delivery"){
-msg+="%0ADelivery: $2000";
+msg+="\nDelivery: $2000";
 total+=deliveryCost;
 }
 
-msg+="%0A%0A💰 TOTAL: $"+total;
+msg+="\n\nTOTAL: $"+total;
 
-window.open("https://wa.me/"+phone+"?text="+msg);
+const url="https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
+
+window.location.href=url; // FUNCIONA EN CELULAR
 
 }
 
@@ -449,7 +433,7 @@ slideIndex=(slideIndex+n+slides.length)%slides.length;
 showSlide(slideIndex);
 }
 
-setInterval(()=>moveSlide(1),2000);
+setInterval(()=>moveSlide(1),3000);
 
 refresh();
 
