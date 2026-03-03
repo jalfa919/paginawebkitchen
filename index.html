@@ -18,26 +18,63 @@ body{
 margin:0;
 font-family:Arial, sans-serif;
 background:var(--background);
+scroll-behavior:smooth;
 }
 
 /* HEADER */
+
 header{
 background:var(--surface);
 padding:5px 0;
-text-align:center;
 box-shadow:0 2px 5px rgba(0,0,0,0.1);
+display:flex;
+justify-content:center;
+align-items:center;
+position:relative;
 }
 
 .logo-container{
-width:220px;
-margin:auto;
+width:200px;
 }
 
 .logo{
 width:100%;
 }
 
+/* BOTON MENU */
+
+.menu-btn{
+position:absolute;
+right:15px;
+font-size:26px;
+background:none;
+color:black;
+cursor:pointer;
+}
+
+.dropdown{
+position:absolute;
+top:60px;
+right:10px;
+background:white;
+border-radius:10px;
+box-shadow:0 5px 15px rgba(0,0,0,0.2);
+display:none;
+padding:10px;
+z-index:999;
+}
+
+.dropdown div{
+padding:8px 15px;
+cursor:pointer;
+}
+
+.dropdown div:hover{
+background:#f0f0f0;
+}
+
 /* CARRUSEL */
+
 .carousel{
 position:relative;
 width:100%;
@@ -71,7 +108,6 @@ padding:5px 10px;
 .prev{left:0;}
 .next{right:0;}
 
-/* CONTENIDO */
 .container{
 padding:15px;
 max-width:500px;
@@ -130,6 +166,7 @@ cursor:pointer;
 }
 
 /* CARRITO */
+
 .cart-box{
 background:white;
 padding:15px;
@@ -145,7 +182,13 @@ margin-top:8px;
 font-size:14px;
 }
 
+.subtotal{
+margin-top:10px;
+font-weight:bold;
+}
+
 /* TOTAL BOX */
+
 .total-box{
 background:white;
 padding:15px;
@@ -174,14 +217,8 @@ font-size:18px;
 background:#25D366;
 }
 
-/* MAPA */
-.map{
-margin-top:20px;
-border-radius:10px;
-overflow:hidden;
-}
+/* CONTACTOS EN NEGRO */
 
-/* CONTACTOS */
 .contact{
 background:white;
 padding:15px;
@@ -192,7 +229,7 @@ border-radius:10px;
 .contact a{
 display:block;
 margin-top:5px;
-color:var(--primary);
+color:black;
 text-decoration:none;
 font-weight:bold;
 }
@@ -205,6 +242,10 @@ font-weight:bold;
 <div class="logo-container">
 <img src="images/logo.png" class="logo">
 </div>
+
+<button class="menu-btn" onclick="toggleMenu()">☰</button>
+
+<div class="dropdown" id="dropdownMenu"></div>
 </header>
 
 <div class="carousel">
@@ -219,16 +260,17 @@ font-weight:bold;
 
 <div id="menu"></div>
 
-<!-- CARRITO VISUAL -->
 <div class="cart-box">
 <h3>🛒 Tu pedido</h3>
 <div id="cart-items"></div>
+<div class="subtotal">
+Subtotal: $<span id="subtotal">0</span>
+</div>
 <button onclick="clearCart()" style="background:#999;margin-top:10px;">
 🗑 Vaciar carrito
 </button>
 </div>
 
-<!-- DATOS Y TOTAL -->
 <div class="total-box">
 
 <input type="text" id="cliente" placeholder="Nombre del cliente">
@@ -249,13 +291,6 @@ Enviar pedido por WhatsApp
 
 </div>
 
-<div class="map">
-<iframe
-src="https://www.google.com/maps?q=-29.9509505,-71.349806&hl=es&z=17&output=embed"
-width="100%" height="250" style="border:0;">
-</iframe>
-</div>
-
 <div class="contact">
 Contacto directo:
 <a href="https://wa.me/56979553144">WhatsApp</a>
@@ -267,10 +302,10 @@ Contacto directo:
 
 <script>
 
-const phone = "56979553144";
-const deliveryCost = 2000;
+const phone="56979553144";
+const deliveryCost=2000;
 
-const products = [
+const products=[
 { id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
 { id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
 { id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
@@ -279,19 +314,23 @@ const products = [
 { id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
 ];
 
-let cart = JSON.parse(localStorage.getItem("cart")) || {};
+let cart=JSON.parse(localStorage.getItem("cart"))||{};
 
 function saveCart(){
-localStorage.setItem("cart", JSON.stringify(cart));
+localStorage.setItem("cart",JSON.stringify(cart));
 }
 
 function renderMenu(){
-const menu = document.getElementById("menu");
+const menu=document.getElementById("menu");
 menu.innerHTML="";
-const categories = [...new Set(products.map(p => p.category))];
+const categories=[...new Set(products.map(p=>p.category))];
+const dropdown=document.getElementById("dropdownMenu");
+dropdown.innerHTML="";
 
 categories.forEach(category=>{
-let html=`<div class="category"><h2>${category}</h2>`;
+dropdown.innerHTML+=`<div onclick="scrollToCategory('${category}')">${category}</div>`;
+
+let html=`<div class="category" id="${category}"><h2>${category}</h2>`;
 products.filter(p=>p.category===category).forEach(product=>{
 const qty=cart[product.id]||0;
 html+=`
@@ -306,30 +345,45 @@ html+=`
 <span>${qty}</span>
 <button onclick="add('${product.id}')">+</button>
 </div>
-</div>
-`;
+</div>`;
 });
 html+="</div>";
 menu.innerHTML+=html;
 });
 }
 
+function scrollToCategory(cat){
+document.getElementById(cat).scrollIntoView();
+toggleMenu();
+}
+
+function toggleMenu(){
+const menu=document.getElementById("dropdownMenu");
+menu.style.display=menu.style.display==="block"?"none":"block";
+}
+
 function renderCart(){
 const box=document.getElementById("cart-items");
 box.innerHTML="";
+let subtotal=0;
+
 if(Object.keys(cart).length===0){
 box.innerHTML="<p>Carrito vacío</p>";
+document.getElementById("subtotal").innerText=0;
 return;
 }
+
 for(const id in cart){
 const product=products.find(p=>p.id===id);
+subtotal+=product.price*cart[id];
 box.innerHTML+=`
 <div class="cart-item">
 <span>${cart[id]}x ${product.name}</span>
 <button onclick="deleteItem('${id}')" style="background:#999;">❌</button>
-</div>
-`;
+</div>`;
 }
+
+document.getElementById("subtotal").innerText=subtotal;
 }
 
 function deleteItem(id){
@@ -360,11 +414,12 @@ refresh();
 }
 
 function updateTotal(){
-let total=0;
+let subtotal=0;
 for(const id in cart){
 const product=products.find(p=>p.id===id);
-total+=product.price*cart[id];
+subtotal+=product.price*cart[id];
 }
+let total=subtotal;
 if(document.getElementById("deliveryType").value==="delivery")
 total+=deliveryCost;
 document.getElementById("total").innerText=total;
@@ -377,7 +432,6 @@ updateTotal();
 }
 
 function sendWhatsApp(){
-
 if(Object.keys(cart).length===0){
 alert("Carrito vacío");
 return;
@@ -391,22 +445,21 @@ let msg="🍣 NUEVO PEDIDO - LOS AROMOS 🍣\n\n";
 msg+="Cliente: "+cliente+"\n";
 
 if(delivery==="delivery"){
-msg+="Dirección: "+direccion+"\n";
-msg+="Delivery\n";
+msg+="Dirección: "+direccion+"\nDelivery\n";
 }else{
 msg+="Retiro en local\n";
 }
 
 msg+="\nDetalle:\n";
 
-let total=0;
-
+let subtotal=0;
 for(const id in cart){
 const product=products.find(p=>p.id===id);
 msg+=cart[id]+"x "+product.name+" - $"+(product.price*cart[id])+"\n";
-total+=product.price*cart[id];
+subtotal+=product.price*cart[id];
 }
 
+let total=subtotal;
 if(delivery==="delivery"){
 msg+="\nDelivery: $2000";
 total+=deliveryCost;
@@ -414,10 +467,7 @@ total+=deliveryCost;
 
 msg+="\n\nTOTAL: $"+total;
 
-const url="https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
-
-window.location.href=url; // FUNCIONA EN CELULAR
-
+window.location.href="https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
 }
 
 let slideIndex=0;
