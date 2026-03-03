@@ -3,489 +3,283 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Los Aromos Kitchen y Sushi</title>
+<title>Pizzería Al Taglio</title>
 
 <style>
 
-:root{
---primary:#e63946;
---surface:#ffffff;
---background:#f4f4f4;
---text:#222;
-}
-
+/* ===== RESET ===== */
 body{
-margin:0;
-font-family:Arial, sans-serif;
-background:var(--background);
-scroll-behavior:smooth;
+  margin:0;
+  font-family: Arial, Helvetica, sans-serif;
+  background:#1f2f3f;
+  color:white;
 }
 
-/* HEADER */
-
+/* ===== HEADER ===== */
 header{
-background:var(--surface);
-padding:5px 0;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
-display:flex;
-justify-content:center;
-align-items:center;
-position:relative;
-}
-
-.logo-container{
-width:200px;
+  background:#f2eadf;
+  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
 }
 
 .logo{
-width:100%;
+  font-size:24px;
+  font-weight:bold;
+  color:black;
 }
-
-/* BOTON MENU */
 
 .menu-btn{
-position:absolute;
-right:15px;
-font-size:26px;
-background:none;
-color:black;
-cursor:pointer;
+  font-size:28px;
+  cursor:pointer;
+  color:black;
 }
 
+/* ===== MENÚ DESPLEGABLE ===== */
 .dropdown{
-position:absolute;
-top:60px;
-right:10px;
-background:white;
-border-radius:10px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
-display:none;
-padding:10px;
-z-index:999;
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:250px;
+  height:100%;
+  background:white;
+  color:black;
+  transition:0.4s ease;
+  padding:20px;
+  box-shadow:-5px 0 20px rgba(0,0,0,0.3);
+  z-index:100;
 }
 
-.dropdown div{
-padding:8px 15px;
-cursor:pointer;
+.dropdown.active{
+  right:0;
 }
 
-.dropdown div:hover{
-background:#f0f0f0;
+.dropdown h2{
+  text-decoration: underline;
+  margin-top:0;
 }
 
-/* CARRUSEL */
-
-.carousel{
-position:relative;
-width:100%;
-max-width:500px;
-margin:10px auto;
-overflow:hidden;
-border-radius:10px;
+.dropdown ul{
+  list-style:none;
+  padding:0;
 }
 
-.carousel img{
-width:100%;
-display:none;
+.dropdown li{
+  margin:15px 0;
+  font-weight:bold;
+  cursor:pointer;
 }
 
-.carousel img.active{
-display:block;
+.close-btn{
+  text-align:right;
+  font-size:20px;
+  cursor:pointer;
 }
 
-.carousel button{
-position:absolute;
-top:50%;
-transform:translateY(-50%);
-background:rgba(0,0,0,0.5);
-color:white;
-border:none;
-font-size:20px;
-cursor:pointer;
-padding:5px 10px;
+/* ===== CARRUSEL PREMIUM ===== */
+
+.carousel-section{
+  padding:30px 0;
 }
 
-.prev{left:0;}
-.next{right:0;}
-
-.container{
-padding:15px;
-max-width:500px;
-margin:auto;
+.carousel-container{
+  position:relative;
+  overflow:hidden;
+  width:100%;
 }
 
-.category{
-margin-top:25px;
+.carousel-track{
+  display:flex;
+  transition: transform 0.6s cubic-bezier(0.77, 0, 0.175, 1);
 }
 
-.category h2{
-border-bottom:2px solid var(--primary);
+.carousel-item{
+  min-width:80%;
+  margin:0 10%;
+  transition: transform 0.4s ease, box-shadow 0.4s ease;
 }
 
-.product{
-background:white;
-padding:10px;
-margin-top:10px;
-border-radius:10px;
-display:flex;
-justify-content:space-between;
-align-items:center;
+.carousel-item img{
+  width:100%;
+  border-radius:20px;
+  display:block;
 }
 
-.product-info{
-max-width:65%;
+.carousel-item.active{
+  transform:scale(1.05);
 }
 
-.product-name{
-font-weight:bold;
+.carousel-item.active img{
+  box-shadow:0 20px 40px rgba(0,0,0,0.6);
 }
 
-.product-description{
-font-size:14px;
-color:#666;
+/* Flechas */
+.arrow{
+  position:absolute;
+  top:50%;
+  transform:translateY(-50%);
+  background:rgba(0,0,0,0.4);
+  border:none;
+  color:white;
+  font-size:25px;
+  padding:10px 15px;
+  border-radius:50%;
+  cursor:pointer;
+  z-index:10;
 }
 
-.product-price{
-color:var(--primary);
-font-weight:bold;
+.arrow.left{ left:10px; }
+.arrow.right{ right:10px; }
+
+.arrow:hover{
+  background:rgba(0,0,0,0.7);
 }
 
-.controls{
-display:flex;
-align-items:center;
-gap:5px;
+/* Indicadores */
+.carousel-dots{
+  text-align:center;
+  margin-top:15px;
 }
 
-button{
-background:var(--primary);
-color:white;
-border:none;
-padding:5px 10px;
-border-radius:5px;
-cursor:pointer;
+.carousel-dots span{
+  height:10px;
+  width:10px;
+  margin:0 5px;
+  background-color:#bbb;
+  border-radius:50%;
+  display:inline-block;
+  cursor:pointer;
+  transition:0.3s;
 }
 
-/* CARRITO */
-
-.cart-box{
-background:white;
-padding:15px;
-margin-top:20px;
-border-radius:10px;
-}
-
-.cart-item{
-display:flex;
-justify-content:space-between;
-align-items:center;
-margin-top:8px;
-font-size:14px;
-}
-
-.subtotal{
-margin-top:10px;
-font-weight:bold;
-}
-
-/* TOTAL BOX */
-
-.total-box{
-background:white;
-padding:15px;
-margin-top:20px;
-border-radius:10px;
-}
-
-input, select{
-width:100%;
-padding:10px;
-margin-top:10px;
-box-sizing:border-box;
-}
-
-.total{
-font-size:20px;
-font-weight:bold;
-margin-top:10px;
-}
-
-.whatsapp-btn{
-width:100%;
-margin-top:15px;
-padding:15px;
-font-size:18px;
-background:#25D366;
-}
-
-/* CONTACTOS EN NEGRO */
-
-.contact{
-background:white;
-padding:15px;
-margin-top:20px;
-border-radius:10px;
-}
-
-.contact a{
-display:block;
-margin-top:5px;
-color:black;
-text-decoration:none;
-font-weight:bold;
+.carousel-dots span.active{
+  background-color:#e63946;
 }
 
 </style>
 </head>
+
 <body>
 
+<!-- HEADER -->
 <header>
-<div class="logo-container">
-<img src="images/logo.png" class="logo">
-</div>
-
-<button class="menu-btn" onclick="toggleMenu()">☰</button>
-
-<div class="dropdown" id="dropdownMenu"></div>
+  <div class="logo">PIZZERIA AL TAGLIO</div>
+  <div class="menu-btn" onclick="openMenu()">☰</div>
 </header>
 
-<div class="carousel">
-<img src="images/premium1.jpg" class="active">
-<img src="images/premium2.jpg">
-<img src="images/premium3.jpg">
-<button class="prev" onclick="moveSlide(-1)">❮</button>
-<button class="next" onclick="moveSlide(1)">❯</button>
+<!-- MENÚ DESPLEGABLE -->
+<div class="dropdown" id="dropdownMenu">
+  <div class="close-btn" onclick="closeMenu()">✖</div>
+  <h2>Menú</h2>
+  <ul>
+    <li>Pizzas</li>
+    <li>Promociones</li>
+    <li>Bebidas</li>
+    <li>Complementos</li>
+  </ul>
 </div>
 
-<div class="container">
+<!-- CARRUSEL -->
+<section class="carousel-section">
+  <div class="carousel-container">
 
-<div id="menu"></div>
+    <button class="arrow left" onclick="prevSlide()">❮</button>
 
-<div class="cart-box">
-<h3>🛒 Tu pedido</h3>
-<div id="cart-items"></div>
-<div class="subtotal">
-Subtotal: $<span id="subtotal">0</span>
-</div>
-<button onclick="clearCart()" style="background:#999;margin-top:10px;">
-🗑 Vaciar carrito
-</button>
-</div>
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-item">
+        <img src="https://images.unsplash.com/photo-1601924928376-4b8f1bfb28b1" alt="Pizza 1">
+      </div>
+      <div class="carousel-item">
+        <img src="https://images.unsplash.com/photo-1548365328-9f547fb0953b" alt="Pizza 2">
+      </div>
+      <div class="carousel-item">
+        <img src="https://images.unsplash.com/photo-1594007654729-407eedc4be65" alt="Pizza 3">
+      </div>
+    </div>
 
-<div class="total-box">
+    <button class="arrow right" onclick="nextSlide()">❯</button>
 
-<input type="text" id="cliente" placeholder="Nombre del cliente">
-<input type="text" id="direccion" placeholder="Dirección">
+  </div>
 
-<select id="deliveryType" onchange="updateTotal()">
-<option value="retiro">Retiro en local (Gratis)</option>
-<option value="delivery">Delivery (+$2000)</option>
-</select>
-
-<div class="total">
-Total: $<span id="total">0</span>
-</div>
-
-<button class="whatsapp-btn" onclick="sendWhatsApp()">
-Enviar pedido por WhatsApp
-</button>
-
-</div>
-
-<div class="contact">
-Contacto directo:
-<a href="https://wa.me/56979553144">WhatsApp</a>
-<a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a>
-<a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
-</div>
-
-</div>
+  <div class="carousel-dots" id="carouselDots"></div>
+</section>
 
 <script>
 
-const phone="56979553144";
-const deliveryCost=2000;
-
-const products=[
-{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
-{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
-{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
-{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
-];
-
-let cart=JSON.parse(localStorage.getItem("cart"))||{};
-
-function saveCart(){
-localStorage.setItem("cart",JSON.stringify(cart));
+/* ===== MENÚ ===== */
+function openMenu(){
+  document.getElementById("dropdownMenu").classList.add("active");
 }
 
-function renderMenu(){
-const menu=document.getElementById("menu");
-menu.innerHTML="";
-const categories=[...new Set(products.map(p=>p.category))];
-const dropdown=document.getElementById("dropdownMenu");
-dropdown.innerHTML="";
+function closeMenu(){
+  document.getElementById("dropdownMenu").classList.remove("active");
+}
 
-categories.forEach(category=>{
-dropdown.innerHTML+=`<div onclick="scrollToCategory('${category}')">${category}</div>`;
+/* ===== CARRUSEL ===== */
+let currentIndex = 0;
+const track = document.getElementById("carouselTrack");
+const slides = document.querySelectorAll(".carousel-item");
+const dotsContainer = document.getElementById("carouselDots");
 
-let html=`<div class="category" id="${category}"><h2>${category}</h2>`;
-products.filter(p=>p.category===category).forEach(product=>{
-const qty=cart[product.id]||0;
-html+=`
-<div class="product">
-<div class="product-info">
-<div class="product-name">${product.icon} ${product.name}</div>
-<div class="product-description">${product.description}</div>
-<div class="product-price">$${product.price}</div>
-</div>
-<div class="controls">
-<button onclick="remove('${product.id}')">−</button>
-<span>${qty}</span>
-<button onclick="add('${product.id}')">+</button>
-</div>
-</div>`;
+let startX = 0;
+let endX = 0;
+
+function updateCarousel(){
+  const slideWidth = slides[0].offsetWidth;
+  track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+
+  slides.forEach(slide => slide.classList.remove("active"));
+  slides[currentIndex].classList.add("active");
+
+  document.querySelectorAll(".carousel-dots span")
+    .forEach(dot => dot.classList.remove("active"));
+
+  dotsContainer.children[currentIndex].classList.add("active");
+}
+
+function createDots(){
+  slides.forEach((_, index) => {
+    const dot = document.createElement("span");
+    dot.addEventListener("click", () => {
+      currentIndex = index;
+      updateCarousel();
+    });
+    dotsContainer.appendChild(dot);
+  });
+}
+
+function nextSlide(){
+  currentIndex = (currentIndex + 1) % slides.length;
+  updateCarousel();
+}
+
+function prevSlide(){
+  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+  updateCarousel();
+}
+
+/* Swipe táctil */
+track.addEventListener("touchstart", e => {
+  startX = e.touches[0].clientX;
 });
-html+="</div>";
-menu.innerHTML+=html;
+
+track.addEventListener("touchend", e => {
+  endX = e.changedTouches[0].clientX;
+  handleSwipe();
 });
+
+function handleSwipe(){
+  if(startX - endX > 50){
+    nextSlide();
+  }
+  if(endX - startX > 50){
+    prevSlide();
+  }
 }
 
-function scrollToCategory(cat){
-document.getElementById(cat).scrollIntoView();
-toggleMenu();
-}
-
-function toggleMenu(){
-const menu=document.getElementById("dropdownMenu");
-menu.style.display=menu.style.display==="block"?"none":"block";
-}
-
-function renderCart(){
-const box=document.getElementById("cart-items");
-box.innerHTML="";
-let subtotal=0;
-
-if(Object.keys(cart).length===0){
-box.innerHTML="<p>Carrito vacío</p>";
-document.getElementById("subtotal").innerText=0;
-return;
-}
-
-for(const id in cart){
-const product=products.find(p=>p.id===id);
-subtotal+=product.price*cart[id];
-box.innerHTML+=`
-<div class="cart-item">
-<span>${cart[id]}x ${product.name}</span>
-<button onclick="deleteItem('${id}')" style="background:#999;">❌</button>
-</div>`;
-}
-
-document.getElementById("subtotal").innerText=subtotal;
-}
-
-function deleteItem(id){
-delete cart[id];
-saveCart();
-refresh();
-}
-
-function clearCart(){
-cart={};
-saveCart();
-refresh();
-}
-
-function add(id){
-cart[id]=(cart[id]||0)+1;
-saveCart();
-refresh();
-}
-
-function remove(id){
-if(cart[id]){
-cart[id]--;
-if(cart[id]<=0) delete cart[id];
-}
-saveCart();
-refresh();
-}
-
-function updateTotal(){
-let subtotal=0;
-for(const id in cart){
-const product=products.find(p=>p.id===id);
-subtotal+=product.price*cart[id];
-}
-let total=subtotal;
-if(document.getElementById("deliveryType").value==="delivery")
-total+=deliveryCost;
-document.getElementById("total").innerText=total;
-}
-
-function refresh(){
-renderMenu();
-renderCart();
-updateTotal();
-}
-
-function sendWhatsApp(){
-if(Object.keys(cart).length===0){
-alert("Carrito vacío");
-return;
-}
-
-const cliente=document.getElementById("cliente").value;
-const direccion=document.getElementById("direccion").value;
-const delivery=document.getElementById("deliveryType").value;
-
-let msg="🍣 NUEVO PEDIDO - LOS AROMOS 🍣\n\n";
-msg+="Cliente: "+cliente+"\n";
-
-if(delivery==="delivery"){
-msg+="Dirección: "+direccion+"\nDelivery\n";
-}else{
-msg+="Retiro en local\n";
-}
-
-msg+="\nDetalle:\n";
-
-let subtotal=0;
-for(const id in cart){
-const product=products.find(p=>p.id===id);
-msg+=cart[id]+"x "+product.name+" - $"+(product.price*cart[id])+"\n";
-subtotal+=product.price*cart[id];
-}
-
-let total=subtotal;
-if(delivery==="delivery"){
-msg+="\nDelivery: $2000";
-total+=deliveryCost;
-}
-
-msg+="\n\nTOTAL: $"+total;
-
-window.location.href="https://wa.me/"+phone+"?text="+encodeURIComponent(msg);
-}
-
-let slideIndex=0;
-const slides=document.querySelectorAll(".carousel img");
-
-function showSlide(i){
-slides.forEach(s=>s.classList.remove("active"));
-slides[i].classList.add("active");
-}
-
-function moveSlide(n){
-slideIndex=(slideIndex+n+slides.length)%slides.length;
-showSlide(slideIndex);
-}
-
-setInterval(()=>moveSlide(1),3000);
-
-refresh();
+createDots();
+updateCarousel();
 
 </script>
 
