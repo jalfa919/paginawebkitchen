@@ -41,8 +41,6 @@ width:200px;
 width:100%;
 }
 
-/* BOTON MENU */
-
 .menu-btn{
 position:absolute;
 right:15px;
@@ -219,7 +217,7 @@ border-radius:5px;
 cursor:pointer;
 }
 
-.cart-box{
+.cart-box, .total-box, .contact{
 background:white;
 padding:15px;
 margin-top:20px;
@@ -229,7 +227,6 @@ border-radius:10px;
 .cart-item{
 display:flex;
 justify-content:space-between;
-align-items:center;
 margin-top:8px;
 font-size:14px;
 }
@@ -237,13 +234,6 @@ font-size:14px;
 .subtotal{
 margin-top:10px;
 font-weight:bold;
-}
-
-.total-box{
-background:white;
-padding:15px;
-margin-top:20px;
-border-radius:10px;
 }
 
 input, select{
@@ -267,13 +257,6 @@ font-size:18px;
 background:#25D366;
 }
 
-.contact{
-background:white;
-padding:15px;
-margin-top:20px;
-border-radius:10px;
-}
-
 .contact a{
 display:block;
 margin-top:5px;
@@ -284,7 +267,6 @@ font-weight:bold;
 
 </style>
 </head>
-
 <body>
 
 <header>
@@ -299,7 +281,7 @@ font-weight:bold;
 </div>
 </header>
 
-<!-- CARRUSEL PREMIUM -->
+<!-- CARRUSEL -->
 <section class="carousel-section">
   <div class="carousel-container">
 
@@ -325,69 +307,138 @@ font-weight:bold;
 </section>
 
 <div class="container">
+
 <div id="menu"></div>
+
+<div class="cart-box">
+<h3>🛒 Tu pedido</h3>
+<div id="cart-items"></div>
+<div class="subtotal">
+Subtotal: $<span id="subtotal">0</span>
+</div>
+<button onclick="clearCart()" style="background:#999;margin-top:10px;">
+🗑 Vaciar carrito
+</button>
+</div>
+
+<div class="total-box">
+<input type="text" id="cliente" placeholder="Nombre del cliente">
+<input type="text" id="direccion" placeholder="Dirección">
+<select id="deliveryType" onchange="updateTotal()">
+<option value="retiro">Retiro en local (Gratis)</option>
+<option value="delivery">Delivery (+$2000)</option>
+</select>
+<div class="total">
+Total: $<span id="total">0</span>
+</div>
+<button class="whatsapp-btn" onclick="sendWhatsApp()">
+Enviar pedido por WhatsApp
+</button>
+</div>
+
+<div class="contact">
+Contacto directo:
+<a href="https://wa.me/56979553144">WhatsApp</a>
+<a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a>
+<a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
+</div>
+
 </div>
 
 <script>
 
-/* ===== CARRUSEL JS PREMIUM ===== */
+/* ================= CARRUSEL ================= */
 
 let currentIndex = 0;
 const track = document.getElementById("carouselTrack");
 const slides = document.querySelectorAll(".carousel-item");
 const dotsContainer = document.getElementById("carouselDots");
+let startX=0;
 
-let startX = 0;
-let endX = 0;
-
-function updateCarousel() {
-  const slideWidth = slides[0].offsetWidth;
-  track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-
-  slides.forEach(slide => slide.classList.remove("active"));
-  slides[currentIndex].classList.add("active");
-
-  document.querySelectorAll(".carousel-dots span")
-    .forEach(dot => dot.classList.remove("active"));
-
-  dotsContainer.children[currentIndex].classList.add("active");
+function updateCarousel(){
+const slideWidth=slides[0].offsetWidth;
+track.style.transform=`translateX(-${currentIndex*slideWidth}px)`;
+slides.forEach(s=>s.classList.remove("active"));
+slides[currentIndex].classList.add("active");
+document.querySelectorAll(".carousel-dots span").forEach(d=>d.classList.remove("active"));
+dotsContainer.children[currentIndex].classList.add("active");
 }
 
-function createDots() {
-  slides.forEach((_, index) => {
-    const dot = document.createElement("span");
-    dot.addEventListener("click", () => {
-      currentIndex = index;
-      updateCarousel();
-    });
-    dotsContainer.appendChild(dot);
-  });
+function createDots(){
+slides.forEach((_,i)=>{
+const dot=document.createElement("span");
+dot.onclick=()=>{currentIndex=i;updateCarousel();}
+dotsContainer.appendChild(dot);
+});
 }
 
-function nextSlide() {
-  currentIndex = (currentIndex + 1) % slides.length;
-  updateCarousel();
-}
+function nextSlide(){currentIndex=(currentIndex+1)%slides.length;updateCarousel();}
+function prevSlide(){currentIndex=(currentIndex-1+slides.length)%slides.length;updateCarousel();}
 
-function prevSlide() {
-  currentIndex = (currentIndex - 1 + slides.length) % slides.length;
-  updateCarousel();
-}
-
-track.addEventListener("touchstart", e => {
-  startX = e.touches[0].clientX;
+track.addEventListener("touchstart",e=>startX=e.touches[0].clientX);
+track.addEventListener("touchend",e=>{
+let endX=e.changedTouches[0].clientX;
+if(startX-endX>50)nextSlide();
+if(endX-startX>50)prevSlide();
 });
 
-track.addEventListener("touchend", e => {
-  endX = e.changedTouches[0].clientX;
-  if (startX - endX > 50) nextSlide();
-  if (endX - startX > 50) prevSlide();
-});
-
-setInterval(nextSlide, 4000);
-
+setInterval(nextSlide,4000);
 createDots();
 updateCarousel();
+
+/* ================= RESTO DE TU SISTEMA (PRODUCTOS, CARRITO, WHATSAPP) ================= */
+
+const phone="56979553144";
+const deliveryCost=2000;
+
+const products=[
+{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
+{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
+{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
+{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
+{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
+{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||{};
+
+function renderMenu(){
+const menu=document.getElementById("menu");
+const dropdown=document.getElementById("dropdownMenu");
+menu.innerHTML="";
+dropdown.innerHTML="<h3>Menú</h3>";
+const categories=[...new Set(products.map(p=>p.category))];
+categories.forEach(category=>{
+dropdown.innerHTML+=`<div onclick="scrollToCategory('${category}')">${category}</div>`;
+let html=`<div class="category" id="${category}"><h2>${category}</h2>`;
+products.filter(p=>p.category===category).forEach(product=>{
+html+=`<div class="product">
+<div class="product-info">
+<div class="product-name">${product.icon} ${product.name}</div>
+<div class="product-description">${product.description}</div>
+<div class="product-price">$${product.price}</div>
+</div>
+<div class="controls">
+<button onclick="add('${product.id}')">+</button>
+</div>
+</div>`;
+});
+html+="</div>";
+menu.innerHTML+=html;
+});
+}
+
+function toggleMenu(){
+const menu=document.getElementById("dropdownMenu");
+menu.style.display=menu.style.display==="block"?"none":"block";
+}
+
+function scrollToCategory(cat){
+document.getElementById(cat).scrollIntoView();
+toggleMenu();
+}
+
+renderMenu();
 
 </script>
 
