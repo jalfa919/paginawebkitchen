@@ -433,12 +433,56 @@ const deliveryCost=2000;
 
 const products=[
 
-{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
-{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
-{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
-{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
+/* Promos */
+{ id:'promo1', name:'Promo 40', description:'40 cortes surtidos', price:10000, category:'Promos', icon:'🎉'},
+{ id:'promo2', name:'Promo 20 Mechada', description:'20 cortes mechada', price:7000, category:'Promos', icon:'🎉'},
+
+/* Sushi */
+{ id:'sushi1', name:'10 cortes Relleno Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
+{ id:'sushi2', name:'10 cortes Pollo Crispy', description:'10 cortes pollo crispy', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi3', name:'20 cortes Pollo Cebollín', description:'20 cortes pollo cebollín queso', price:6000, category:'Sushi', icon:'🍣'},
+{ id:'sushi4', name:'10 Cortes Mechada Pimentón Queso', description:'Carne mechada pimentón queso', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi5', name:'10 cortes Envoltura en Queso Pollo', description:'Pollo envuelto en queso', price:5000, category:'Sushi', icon:'🍣'},
+{ id:'sushi6', name:'10 cortes KaniKama Cebollín Queso', description:'Kanikama cebollín queso', price:3800, category:'Sushi', icon:'🍣'},
+{ id:'sushi7', name:'10 cortes Mechada Aceituna Queso', description:'Carne mechada aceituna queso', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi8', name:'10 cortes Pollo Cebollín Queso', description:'Pollo cebollín queso', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi9', name:'10 cortes Pollo Palta Queso', description:'Pollo palta queso', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi10', name:'10 cortes Mechada Palta Queso', description:'Carne mechada palta queso', price:4000, category:'Sushi', icon:'🍣'},
+{ id:'sushi11', name:'10 cortes Vegeta', description:'Roll vegetariano', price:4000, category:'Sushi', icon:'🍣'},
+
+/* Gohan */
+{ id:'gohan1', name:'Gohan Pollo Crispy', description:'Base de arroz con pollo crispy', price:5000, category:'Gohan', icon:'🍚'},
+
+/* Sandwich */
+{ id:'sand1', name:'Sushi Burger', description:'Burger de sushi con pollo crispy', price:6000, category:'Sandwich', icon:'🍔'},
+{ id:'sand2', name:'Sándwich Pollo Crispy', description:'Pollo crispy lechuga y mayo', price:6500, category:'Sandwich', icon:'🍔'},
+
+/* Hand Rolls */
+{ id:'hand1', name:'Hand Roll Pollo Palta Queso Phila', description:'Pollo palta queso crema', price:3000, category:'Handrolls', icon:'🌯'},
+{ id:'hand2', name:'Hand Roll Salmón / Pollo / Mechada', description:'Handroll a elección', price:3000, category:'Handrolls', icon:'🌯'},
+{ id:'hand3', name:'Hand Roll Pollo Cebollín Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🌯'},
+
+/* Empanadas */
+{ id:'emp1', name:'Mechada Queso', description:'Empanada mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
+{ id:'emp2', name:'Choclo Queso', description:'Empanada choclo queso', price:2300, category:'Empanadas', icon:'🥟'},
+{ id:'emp3', name:'Aceituna Queso', description:'Empanada aceituna queso', price:2300, category:'Empanadas', icon:'🥟'},
+{ id:'emp4', name:'Pollo Champiñón Crema', description:'Empanada pollo champiñón crema', price:3000, category:'Empanadas', icon:'🥟'},
+
+/* Especiales */
+{ id:'esp1', name:'Pollo Choclo Crema Queso', description:'Pollo con choclo crema y queso', price:3000, category:'Especiales', icon:'🍲'},
+{ id:'esp2', name:'Pollo Cebollín Crema Queso', description:'Pollo con cebollín crema queso', price:3000, category:'Especiales', icon:'🍲'},
+{ id:'esp3', name:'Pollo Crispy con Choclo a la Crema', description:'Plato de pollo crispy con choclo', price:6500, category:'Especiales', icon:'🍲'},
+
+/* Papas */
+{ id:'papas1', name:'Papas Fritas con Tocino', description:'Papas fritas con tocino y salsas', price:5000, category:'Papas', icon:'🍟'},
+{ id:'papas2', name:'Especial Papas con Carne', description:'Papas fritas con carne mechada', price:7000, category:'Papas', icon:'🍟'},
+{ id:'papas3', name:'Especial Mechada Salsa Queso', description:'Papas fritas con mechada y salsa queso', price:7000, category:'Papas', icon:'🍟'},
+{ id:'papas4', name:'Papas Fritas con Pollo Crispy', description:'Papas fritas con pollo crispy', price:6500, category:'Papas', icon:'🍟'},
+{ id:'papas5', name:'Papas Fritas con Mechada', description:'Papas fritas con carne mechada', price:6500, category:'Papas', icon:'🍟'},
+
+/* Bebidas */
+{ id:'beb1', name:'Smoothie Frutilla', description:'Smoothie natural de frutilla', price:3200, category:'Bebidas', icon:'🥤'},
+{ id:'beb2', name:'Bebida 1.5L', description:'Variedad de sabores', price:2800, category:'Bebidas', icon:'🥤'}
 
 ];
 
