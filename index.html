@@ -212,10 +212,12 @@ font-size:18px;
 background:#25D366;
 }
 
-.map{
+/* CONTACTO */
+
+.contact-title{
+font-size:20px;
+font-weight:bold;
 margin-top:20px;
-border-radius:10px;
-overflow:hidden;
 }
 
 .contact{
@@ -225,6 +227,20 @@ margin-top:10px;
 border-radius:10px;
 }
 
+.contact a{
+text-decoration:none;
+color:black;
+font-weight:bold;
+}
+
+/* MAPA */
+
+.map{
+margin-top:20px;
+border-radius:10px;
+overflow:hidden;
+}
+
 .footer{
 text-align:center;
 padding:20px;
@@ -232,6 +248,25 @@ font-size:14px;
 color:#555;
 margin-top:30px;
 }
+
+/* BOTON VOLVER ARRIBA */
+
+.top-btn{
+position:fixed;
+bottom:20px;
+right:20px;
+background:var(--primary);
+color:white;
+font-size:20px;
+border:none;
+border-radius:50%;
+width:45px;
+height:45px;
+cursor:pointer;
+box-shadow:0 3px 8px rgba(0,0,0,0.3);
+display:none;
+}
+
 </style>
 </head>
 
@@ -310,6 +345,18 @@ Enviar pedido por WhatsApp
 
 </div>
 
+<!-- REDES SOCIALES -->
+
+<div class="contact-title">Síguenos</div>
+
+<div class="contact">
+<a href="https://wa.me/56979553144">WhatsApp</a><br>
+<a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a><br>
+<a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
+</div>
+
+<!-- MAPA -->
+
 <div class="map">
 <h3>Nuestra Ubicación</h3>
 
@@ -323,21 +370,44 @@ allowfullscreen>
 
 </div>
 
-Redes sociales:
-
-<div class="contact">
-<a href="https://wa.me/56979553144">WhatsApp</a><br>
-<a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a><br>
-<a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
-</div>
-
 <div class="footer">
 © 2026 Los Aromos Kitchen y Sushi — Todos los derechos reservados.
 </div>
 
 </div>
 
+<!-- BOTON SUBIR -->
+
+<button class="top-btn" id="topBtn" onclick="goTop()">↑</button>
+
 <script>
+
+/* BOTON VOLVER ARRIBA */
+
+const topBtn=document.getElementById("topBtn");
+
+window.onscroll=function(){
+
+if(document.body.scrollTop>300 || document.documentElement.scrollTop>300){
+
+topBtn.style.display="block";
+
+}else{
+
+topBtn.style.display="none";
+
+}
+
+}
+
+function goTop(){
+
+window.scrollTo({
+top:0,
+behavior:"smooth"
+});
+
+}
 
 /* CARRUSEL */
 
