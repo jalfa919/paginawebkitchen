@@ -12,21 +12,21 @@
 --background:#000;
 --surface:#111;
 --card:#1b1b1b;
---text:#ffffff;
+--text:#fff;
 }
 
 body{
 margin:0;
 font-family:Arial, sans-serif;
-background:#000;
-color:#fff;
+background:var(--background);
+color:var(--text);
 scroll-behavior:smooth;
 }
 
 /* HEADER */
 
 header{
-background:#111;
+background:var(--surface);
 padding:5px 0;
 box-shadow:0 2px 5px rgba(0,0,0,0.5);
 display:flex;
@@ -72,7 +72,6 @@ text-decoration:underline;
 padding:8px 5px;
 cursor:pointer;
 font-weight:bold;
-color:white;
 }
 
 .dropdown div:hover{
@@ -109,8 +108,6 @@ border-radius:20px;
 display:block;
 }
 
-/* DOTS */
-
 .carousel-dots{
 text-align:center;
 margin-top:12px;
@@ -145,7 +142,7 @@ border-bottom:2px solid var(--primary);
 /* PRODUCTOS */
 
 .product{
-background:#1b1b1b;
+background:var(--card);
 padding:10px;
 margin-top:10px;
 border-radius:10px;
@@ -177,7 +174,7 @@ cursor:pointer;
 /* CARRITO */
 
 .cart-box, .total-box{
-background:#1b1b1b;
+background:var(--card);
 padding:15px;
 margin-top:20px;
 border-radius:10px;
@@ -239,7 +236,7 @@ margin-top:20px;
 }
 
 .contact{
-background:#1b1b1b;
+background:var(--card);
 padding:15px;
 margin-top:10px;
 border-radius:10px;
@@ -269,7 +266,7 @@ color:#aaa;
 margin-top:30px;
 }
 
-/* BOTON VOLVER ARRIBA */
+/* BOTON ARRIBA */
 
 .top-btn{
 position:fixed;
@@ -283,7 +280,6 @@ border-radius:50%;
 width:45px;
 height:45px;
 cursor:pointer;
-box-shadow:0 3px 8px rgba(0,0,0,0.5);
 display:none;
 }
 
@@ -305,6 +301,8 @@ display:none;
 </div>
 
 </header>
+
+<!-- CARRUSEL -->
 
 <section class="carousel-section">
 
@@ -329,6 +327,7 @@ display:none;
 <div id="menu"></div>
 
 <div class="cart-box">
+
 <h3>🛒 Tu pedido</h3>
 
 <div id="cart-items"></div>
@@ -337,7 +336,9 @@ display:none;
 Subtotal: $<span id="subtotal">0</span>
 </div>
 
-<button onclick="clearCart()" style="background:#666;margin-top:10px;">🗑 Vaciar carrito</button>
+<button onclick="clearCart()" style="background:#666;margin-top:10px;">
+🗑 Vaciar carrito
+</button>
 
 </div>
 
@@ -348,7 +349,7 @@ Subtotal: $<span id="subtotal">0</span>
 
 <select id="deliveryType" onchange="updateTotal()">
 <option value="retiro">Retiro en local (Gratis)</option>
-<option value="delivery">Delivery (+$2000)</option>
+<option value="Delivery">Delivery (+$2000)</option>
 </select>
 
 <select id="paymentType">
@@ -356,7 +357,9 @@ Subtotal: $<span id="subtotal">0</span>
 <option value="Transferencia">Transferencia</option>
 </select>
 
-<div class="total">Total: $<span id="total">0</span></div>
+<div class="total">
+Total: $<span id="total">0</span>
+</div>
 
 <button class="whatsapp-btn" onclick="sendWhatsApp()">
 Enviar pedido por WhatsApp
@@ -373,6 +376,7 @@ Enviar pedido por WhatsApp
 </div>
 
 <div class="map">
+
 <h3>Nuestra Ubicación:</h3>
 
 <iframe 
@@ -395,22 +399,269 @@ allowfullscreen>
 
 <script>
 
+/* BOTON SUBIR */
+
 const topBtn=document.getElementById("topBtn");
 
 window.onscroll=function(){
+
 if(document.body.scrollTop>300 || document.documentElement.scrollTop>300){
+
 topBtn.style.display="block";
+
 }else{
+
 topBtn.style.display="none";
+
 }
+
 }
 
 function goTop(){
-window.scrollTo({
-top:0,
-behavior:"smooth"
-});
+
+window.scrollTo({top:0,behavior:"smooth"});
+
 }
+
+/* PRODUCTOS */
+
+const phone="56979553144";
+const deliveryCost=2000;
+
+const products=[
+
+{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
+{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
+{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
+{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
+{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
+{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
+
+];
+
+let cart=JSON.parse(localStorage.getItem("cart"))||{};
+
+function renderMenu(){
+
+const menu=document.getElementById("menu");
+const dropdown=document.getElementById("dropdownMenu");
+
+menu.innerHTML="";
+dropdown.innerHTML="<h3>Categorías</h3>";
+
+const categories=[...new Set(products.map(p=>p.category))];
+
+categories.forEach(category=>{
+
+dropdown.innerHTML+=`<div onclick="scrollToCategory('${category}')">${category}</div>`;
+
+let html=`<div class="category" id="${category}">
+<h2>${category}</h2>`;
+
+products.filter(p=>p.category===category).forEach(product=>{
+
+html+=`
+
+<div class="product">
+
+<div class="product-info">
+<div class="product-name">${product.icon} ${product.name}</div>
+<div class="product-description">${product.description}</div>
+<div class="product-price">$${product.price}</div>
+</div>
+
+<div class="controls">
+<button onclick="removeItem('${product.id}')">-</button>
+<span>${cart[product.id]||0}</span>
+<button onclick="add('${product.id}')">+</button>
+</div>
+
+</div>`;
+
+});
+
+html+="</div>";
+
+menu.innerHTML+=html;
+
+});
+
+updateCart();
+
+}
+
+function add(id){
+
+cart[id]=(cart[id]||0)+1;
+saveCart();
+renderMenu();
+
+}
+
+function removeItem(id){
+
+if(cart[id]){
+
+cart[id]--;
+
+if(cart[id]<=0) delete cart[id];
+
+saveCart();
+renderMenu();
+
+}
+
+}
+
+function deleteItem(id){
+
+delete cart[id];
+
+saveCart();
+renderMenu();
+
+}
+
+function clearCart(){
+
+cart={};
+saveCart();
+renderMenu();
+
+}
+
+function saveCart(){
+
+localStorage.setItem("cart",JSON.stringify(cart));
+updateCart();
+
+}
+
+function updateCart(){
+
+const cartItems=document.getElementById("cart-items");
+
+cartItems.innerHTML="";
+
+let subtotal=0;
+
+for(let id in cart){
+
+const product=products.find(p=>p.id===id);
+
+const qty=cart[id];
+
+const total=product.price*qty;
+
+subtotal+=total;
+
+cartItems.innerHTML+=`
+
+<div class="cart-item">
+
+<span>
+${product.name} x${qty}
+</span>
+
+<span>
+$${total}
+<button class="delete-btn" onclick="deleteItem('${id}')">🗑</button>
+</span>
+
+</div>`;
+
+}
+
+document.getElementById("subtotal").innerText=subtotal;
+
+updateTotal();
+
+}
+
+function updateTotal(){
+
+let subtotal=parseInt(document.getElementById("subtotal").innerText)||0;
+
+let delivery=document.getElementById("deliveryType").value==="Delivery"
+?deliveryCost:0;
+
+document.getElementById("total").innerText=subtotal+delivery;
+
+}
+
+function sendWhatsApp(){
+
+if(Object.keys(cart).length===0){
+
+alert("Agrega productos al carrito");
+return;
+
+}
+
+let cliente=document.getElementById("cliente").value.trim();
+
+if(cliente===""){
+
+alert("Ingresa el nombre del cliente");
+return;
+
+}
+
+let direccion=document.getElementById("direccion").value;
+let deliveryType=document.getElementById("deliveryType").value;
+let paymentType=document.getElementById("paymentType").value;
+let total=document.getElementById("total").innerText;
+
+let message="🍣 NUEVO PEDIDO 🍣\n\n";
+
+message+=`Nombre: ${cliente}\n`;
+message+=`Dirección: ${direccion}\n`;
+message+=`Tipo de pedido: ${deliveryType}\n`;
+message+=`Tipo de pago: ${paymentType}\n\n`;
+
+message+="Detalle:\n";
+
+for(let id in cart){
+
+let product=products.find(p=>p.id===id);
+let qty=cart[id];
+let lineTotal=product.price*qty;
+
+message+=`${qty} x ${product.name} = $${lineTotal}\n`;
+
+}
+
+if(deliveryType==="Delivery"){
+
+message+=`Delivery = $${deliveryCost}\n\n`;
+
+}
+
+message+=`Total = $${total}\n`;
+
+window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
+
+}
+
+function toggleMenu(){
+
+const menu=document.getElementById("dropdownMenu");
+
+menu.style.display=menu.style.display==="block"
+?"none":"block";
+
+}
+
+function scrollToCategory(cat){
+
+document.getElementById(cat)
+.scrollIntoView({behavior:"smooth"});
+
+toggleMenu();
+
+}
+
+renderMenu();
 
 </script>
 
