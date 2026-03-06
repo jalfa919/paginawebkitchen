@@ -641,6 +641,51 @@ toggleMenu();
 
 }
 
+/* SWIPE CARRUSEL (DESLIZAR IZQUIERDA / DERECHA) */
+
+let startX = 0;
+let endX = 0;
+
+const carousel = document.querySelector(".carousel");
+
+/* Detectar inicio del toque */
+carousel.addEventListener("touchstart", e => {
+startX = e.touches[0].clientX;
+});
+
+/* Detectar final del toque */
+carousel.addEventListener("touchend", e => {
+endX = e.changedTouches[0].clientX;
+handleSwipe();
+});
+
+/* También funciona con mouse */
+carousel.addEventListener("mousedown", e => {
+startX = e.clientX;
+});
+
+carousel.addEventListener("mouseup", e => {
+endX = e.clientX;
+handleSwipe();
+});
+
+function handleSwipe(){
+
+let diff = startX - endX;
+
+/* deslizar izquierda */
+if(diff > 50){
+index = (index + 1) % slides.length;
+updateCarousel();
+}
+
+/* deslizar derecha */
+if(diff < -50){
+index = (index - 1 + slides.length) % slides.length;
+updateCarousel();
+}
+
+}
 renderMenu();
 
 </script>
