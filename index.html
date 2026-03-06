@@ -8,15 +8,17 @@
 <style>
 :root{
 --primary:#e63946;
---surface:#ffffff;
---background:#f4f4f4;
---text:#222;
+--surface:#1a1a1a;
+--background:#000000;
+--text:#ffffff;
+--card:#1f1f1f;
 }
 
 body{
 margin:0;
 font-family:Arial, sans-serif;
 background:var(--background);
+color:var(--text);
 scroll-behavior:smooth;
 }
 
@@ -24,7 +26,7 @@ scroll-behavior:smooth;
 header{
 background:var(--surface);
 padding:5px 0;
-box-shadow:0 2px 5px rgba(0,0,0,0.1);
+box-shadow:0 2px 5px rgba(0,0,0,0.5);
 display:flex;
 justify-content:center;
 align-items:center;
@@ -40,6 +42,7 @@ right:15px;
 font-size:26px;
 background:none;
 border:none;
+color:white;
 cursor:pointer;
 }
 
@@ -47,9 +50,9 @@ cursor:pointer;
 position:absolute;
 top:60px;
 right:10px;
-background:white;
+background:#1a1a1a;
 border-radius:12px;
-box-shadow:0 5px 15px rgba(0,0,0,0.2);
+box-shadow:0 5px 15px rgba(0,0,0,0.5);
 display:none;
 padding:15px;
 z-index:999;
@@ -68,7 +71,7 @@ font-weight:bold;
 }
 
 .dropdown div:hover{
-background:#f0f0f0;
+background:#333;
 border-radius:6px;
 }
 
@@ -112,7 +115,7 @@ margin-top:12px;
 height:10px;
 width:10px;
 margin:0 5px;
-background:#ccc;
+background:#555;
 border-radius:50%;
 display:inline-block;
 cursor:pointer;
@@ -135,7 +138,7 @@ border-bottom:2px solid var(--primary);
 }
 
 .product{
-background:white;
+background:var(--card);
 padding:10px;
 margin-top:10px;
 border-radius:10px;
@@ -146,7 +149,7 @@ align-items:center;
 
 .product-info{max-width:60%;}
 .product-name{font-weight:bold;}
-.product-description{font-size:14px;color:#666;}
+.product-description{font-size:14px;color:#bbb;}
 .product-price{color:var(--primary);font-weight:bold;}
 
 .controls{
@@ -165,7 +168,7 @@ cursor:pointer;
 }
 
 .cart-box, .total-box{
-background:white;
+background:var(--card);
 padding:15px;
 margin-top:20px;
 border-radius:10px;
@@ -180,7 +183,7 @@ align-items:center;
 }
 
 .delete-btn{
-background:#999;
+background:#666;
 padding:3px 8px;
 margin-left:10px;
 }
@@ -196,6 +199,9 @@ width:100%;
 padding:10px;
 margin-top:10px;
 box-sizing:border-box;
+background:#111;
+color:white;
+border:1px solid #444;
 }
 
 .total{
@@ -221,7 +227,7 @@ margin-top:20px;
 }
 
 .contact{
-background:white;
+background:var(--card);
 padding:15px;
 margin-top:10px;
 border-radius:10px;
@@ -229,7 +235,7 @@ border-radius:10px;
 
 .contact a{
 text-decoration:none;
-color:black;
+color:white;
 font-weight:bold;
 }
 
@@ -241,11 +247,13 @@ border-radius:10px;
 overflow:hidden;
 }
 
+/* FOOTER */
+
 .footer{
 text-align:center;
 padding:20px;
 font-size:14px;
-color:#555;
+color:#aaa;
 margin-top:30px;
 }
 
@@ -263,7 +271,7 @@ border-radius:50%;
 width:45px;
 height:45px;
 cursor:pointer;
-box-shadow:0 3px 8px rgba(0,0,0,0.3);
+box-shadow:0 3px 8px rgba(0,0,0,0.5);
 display:none;
 }
 
@@ -286,7 +294,6 @@ display:none;
 
 </header>
 
-<!-- CARRUSEL -->
 <section class="carousel-section">
 
 <div class="carousel-container">
@@ -318,7 +325,7 @@ display:none;
 Subtotal: $<span id="subtotal">0</span>
 </div>
 
-<button onclick="clearCart()" style="background:#999;margin-top:10px;">🗑 Vaciar carrito</button>
+<button onclick="clearCart()" style="background:#666;margin-top:10px;">🗑 Vaciar carrito</button>
 
 </div>
 
@@ -345,8 +352,6 @@ Enviar pedido por WhatsApp
 
 </div>
 
-<!-- REDES SOCIALES -->
-
 <div class="contact-title">Síguenos:</div>
 
 <div class="contact">
@@ -354,8 +359,6 @@ Enviar pedido por WhatsApp
 <a href="https://www.instagram.com/kitchen.los.aromos/" target="_blank">Instagram</a><br>
 <a href="https://www.facebook.com/kitchensushilosaromos/" target="_blank">Facebook</a>
 </div>
-
-<!-- MAPA -->
 
 <div class="map">
 <h3>Nuestra Ubicación:</h3>
@@ -376,13 +379,11 @@ allowfullscreen>
 
 </div>
 
-<!-- BOTON SUBIR -->
-
 <button class="top-btn" id="topBtn" onclick="goTop()">↑</button>
 
 <script>
 
-/* BOTON VOLVER ARRIBA */
+/* BOTON SUBIR */
 
 const topBtn=document.getElementById("topBtn");
 
@@ -408,298 +409,6 @@ behavior:"smooth"
 });
 
 }
-
-/* CARRUSEL */
-
-let currentIndex=0;
-const track=document.getElementById("carouselTrack");
-const slides=document.querySelectorAll(".carousel-item");
-const dotsContainer=document.getElementById("carouselDots");
-
-function updateCarousel(){
-const slideWidth=slides[0].offsetWidth;
-track.style.transform=`translateX(-${currentIndex*slideWidth}px)`;
-
-document.querySelectorAll(".carousel-dots span")
-.forEach(d=>d.classList.remove("active"));
-
-dotsContainer.children[currentIndex].classList.add("active");
-}
-
-function createDots(){
-
-slides.forEach((_,i)=>{
-
-const dot=document.createElement("span");
-
-dot.onclick=()=>{
-currentIndex=i;
-updateCarousel();
-}
-
-dotsContainer.appendChild(dot);
-
-});
-
-}
-
-function nextSlide(){
-
-currentIndex=(currentIndex+1)%slides.length;
-updateCarousel();
-
-}
-
-window.addEventListener("load",()=>{
-
-createDots();
-updateCarousel();
-
-setInterval(nextSlide,4000);
-
-});
-
-/* PRODUCTOS */
-
-const phone="56979553144";
-const deliveryCost=2000;
-
-const products=[
-
-{ id:'sushi1', name:'10 cortes Carne Mechada', description:'10 cortes con carne mechada', price:4800, category:'Sushi', icon:'🍣'},
-{ id:'sushi2', name:'Gohan Pollo Crispy', description:'Pollo crispy', price:5000, category:'Sushi', icon:'🍚'},
-{ id:'hand1', name:'Hand Roll Pollo Queso', description:'Pollo cebollín queso', price:3000, category:'Handrolls', icon:'🍣'},
-{ id:'emp1', name:'Empanada Mechada', description:'Carne mechada queso', price:2300, category:'Empanadas', icon:'🥟'},
-{ id:'papas1', name:'Papas con Tocino', description:'Papas con salsa', price:5000, category:'Papas', icon:'🍟'},
-{ id:'beb1', name:'Bebida 1.5L', description:'Variedad sabores', price:2500, category:'Bebidas', icon:'🥤'}
-
-];
-
-let cart=JSON.parse(localStorage.getItem("cart"))||{};
-
-function renderMenu(){
-
-const menu=document.getElementById("menu");
-const dropdown=document.getElementById("dropdownMenu");
-
-menu.innerHTML="";
-dropdown.innerHTML="<h3>Categorías</h3>";
-
-const categories=[...new Set(products.map(p=>p.category))];
-
-categories.forEach(category=>{
-
-dropdown.innerHTML+=`<div onclick="scrollToCategory('${category}')">${category}</div>`;
-
-let html=`<div class="category" id="${category}">
-<h2>${category}</h2>`;
-
-products.filter(p=>p.category===category).forEach(product=>{
-
-html+=`
-
-<div class="product">
-
-<div class="product-info">
-<div class="product-name">${product.icon} ${product.name}</div>
-<div class="product-description">${product.description}</div>
-<div class="product-price">$${product.price}</div>
-</div>
-
-<div class="controls">
-<button onclick="removeItem('${product.id}')">-</button>
-<span>${cart[product.id]||0}</span>
-<button onclick="add('${product.id}')">+</button>
-</div>
-
-</div>`;
-
-});
-
-html+="</div>";
-
-menu.innerHTML+=html;
-
-});
-
-updateCart();
-
-}
-
-function add(id){
-
-cart[id]=(cart[id]||0)+1;
-saveCart();
-renderMenu();
-
-}
-
-function removeItem(id){
-
-if(cart[id]){
-
-cart[id]--;
-
-if(cart[id]<=0) delete cart[id];
-
-saveCart();
-renderMenu();
-
-}
-
-}
-
-function deleteItem(id){
-
-delete cart[id];
-
-saveCart();
-renderMenu();
-
-}
-
-function clearCart(){
-
-cart={};
-saveCart();
-renderMenu();
-
-}
-
-function saveCart(){
-
-localStorage.setItem("cart",JSON.stringify(cart));
-updateCart();
-
-}
-
-function updateCart(){
-
-const cartItems=document.getElementById("cart-items");
-
-cartItems.innerHTML="";
-
-let subtotal=0;
-
-for(let id in cart){
-
-const product=products.find(p=>p.id===id);
-
-const qty=cart[id];
-
-const total=product.price*qty;
-
-subtotal+=total;
-
-cartItems.innerHTML+=`
-
-<div class="cart-item">
-
-<span>
-${product.name} x${qty}
-</span>
-
-<span>
-$${total}
-<button class="delete-btn" onclick="deleteItem('${id}')">🗑</button>
-</span>
-
-</div>`;
-
-}
-
-document.getElementById("subtotal").innerText=subtotal;
-
-updateTotal();
-
-}
-
-function updateTotal(){
-
-let subtotal=parseInt(document.getElementById("subtotal").innerText)||0;
-
-let delivery=document.getElementById("deliveryType").value==="Delivery"
-?deliveryCost:0;
-
-document.getElementById("total").innerText=subtotal+delivery;
-
-}
-
-function sendWhatsApp(){
-
-if(Object.keys(cart).length===0){
-
-alert("Agrega productos al carrito");
-return;
-
-}
-
-let cliente=document.getElementById("cliente").value.trim();
-
-if(cliente===""){
-
-alert("Ingresa el nombre del cliente");
-return;
-
-}
-
-let direccion=document.getElementById("direccion").value;
-let deliveryType=document.getElementById("deliveryType").value;
-let paymentType=document.getElementById("paymentType").value;
-let total=document.getElementById("total").innerText;
-
-let message="🍣 NUEVO PEDIDO 🍣\n\n";
-
-message+=`Nombre: ${cliente}\n`;
-message+=`Dirección: ${direccion}\n`;
-message+=`Tipo de pedido: ${deliveryType}\n`;
-message+=`Tipo de pago: ${paymentType}\n\n`;
-
-message+="Detalle:\n";
-
-for(let id in cart){
-
-let product=products.find(p=>p.id===id);
-
-let qty=cart[id];
-
-let lineTotal=product.price*qty;
-
-message+=`${qty} x ${product.name} = $${lineTotal}\n`;
-
-}
-
-if(deliveryType==="Delivery"){
-
-message+=`Delivery = $${deliveryCost}\n\n`;
-
-}
-
-message+=`Total = $${total}\n`;
-
-window.open(`https://wa.me/${phone}?text=${encodeURIComponent(message)}`);
-
-}
-
-function toggleMenu(){
-
-const menu=document.getElementById("dropdownMenu");
-
-menu.style.display=menu.style.display==="block"
-?"none":"block";
-
-}
-
-function scrollToCategory(cat){
-
-document.getElementById(cat)
-.scrollIntoView({behavior:"smooth"});
-
-toggleMenu();
-
-}
-
-renderMenu();
 
 </script>
 
