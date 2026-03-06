@@ -347,7 +347,7 @@ Enviar pedido por WhatsApp
 
 <!-- REDES SOCIALES -->
 
-<div class="contact-title">Síguenos</div>
+<div class="contact-title">Síguenos:</div>
 
 <div class="contact">
 <a href="https://wa.me/56979553144">WhatsApp</a><br>
@@ -358,7 +358,7 @@ Enviar pedido por WhatsApp
 <!-- MAPA -->
 
 <div class="map">
-<h3>Nuestra Ubicación</h3>
+<h3>Nuestra Ubicación:</h3>
 
 <iframe 
 width="100%" 
@@ -618,7 +618,7 @@ function updateTotal(){
 
 let subtotal=parseInt(document.getElementById("subtotal").innerText)||0;
 
-let delivery=document.getElementById("deliveryType").value==="delivery"
+let delivery=document.getElementById("deliveryType").value==="Delivery"
 ?deliveryCost:0;
 
 document.getElementById("total").innerText=subtotal+delivery;
@@ -669,7 +669,7 @@ message+=`${qty} x ${product.name} = $${lineTotal}\n`;
 
 }
 
-if(deliveryType==="delivery"){
+if(deliveryType==="Delivery"){
 
 message+=`Delivery = $${deliveryCost}\n\n`;
 
